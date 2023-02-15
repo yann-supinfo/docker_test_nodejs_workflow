@@ -7,16 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     services:
       app:
-        image: docker-image-name
+        image: yann404/docker-demon-node
         ports:
           - 5000:5000
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build Docker image
-        run: docker build -t docker-image-name .
+        run: docker build -t yann404/docker-demon-node .
       - name: Start app
-        run: docker run -d -p 3000:3000 docker-image-name
+        run: docker run -d -p 5000:5000 yann404/docker-demon-node
       - name: Wait for app to start
         run: |
           n=0
