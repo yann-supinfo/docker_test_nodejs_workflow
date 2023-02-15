@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag docker-demon-node:latest
+    - name: Start Docker container
+      run: docker run -d -p 3000:3000 --name node-container docker-demon-node:latest
+    - name: Run tests in the Docker container
+      run: docker exec node-container bash -c "npm test"
+    - name: Stop Docker container
+      run: docker stop node-container
+           docker rm node-container
