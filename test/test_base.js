@@ -5,7 +5,7 @@ var assert = require('chai').assert
   describe('Math', function() {
     describe('#multiply()', function() {
       it('should multiply two numbers correctly', function() {
-        assert.equal(2*3, 5);
+        assert.equal(2*3, 10);
       });
     });
   });
