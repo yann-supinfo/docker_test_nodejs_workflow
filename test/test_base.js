@@ -9,3 +9,13 @@ var assert = require('chai').assert
       });
     });
   });
+
+  describe('test 2', () => {
+
+    it('addition de deux nombres est égale à 5', () => {
+         const a = 2;
+         const b = 3;
+         assert.equal(a + b, 5)
+    })
+
+  })
