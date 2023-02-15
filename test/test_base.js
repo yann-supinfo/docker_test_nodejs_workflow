@@ -15,7 +15,7 @@ var assert = require('chai').assert
     it('addition de deux nombres est égale à 5', () => {
          const a = 2;
          const b = 3;
-         assert.equal(a + b, 5)
+         assert.equal(a + b, 6)
     })
 
   })
