@@ -2,10 +2,10 @@ var assert = require('chai').assert
   , foo = 'bar'
   , beverages = { tea: [ 'chai', 'matcha', 'oolong' ] };
 
-  describe('Math', function() {
-    describe('#multiply()', function() {
-      it('should multiply two numbers correctly', function() {
-        assert.equal(2*3, 10);
+  describe('Array', function() {
+    describe('#indexOf()', function() {
+      it('should return -1 when the value is not present', function() {
+        assert.equal([1,2,3].indexOf(4), -1);
       });
     });
   });
