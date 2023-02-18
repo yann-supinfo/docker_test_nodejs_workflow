@@ -24,7 +24,7 @@ jobs:
         PMA_HOST: ${{ secrets.PMA_HOST }}
         PMA_PORT: ${{ secrets.PMA_PORT }}
         UPLOAD_LIMIT: ${{ secrets.UPLOAD_LIMIT }}
-      run: printenv  && docker-compose up -d && docker-compose exec app env | grep DB_PASSWORD
+      run: printenv  && docker-compose up -d && docker-compose exec docker_test_nodejs_workflow_app_1  env | grep DB_PASSWORD
     - name: Debug
       run: printenv
     - name: Show app log
