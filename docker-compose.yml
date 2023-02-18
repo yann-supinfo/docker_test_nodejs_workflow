@@ -4,7 +4,7 @@ services:
   app:
     build: .
     environment:
-      - DB_HOST=db
+      - DB_HOST=localhost
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -32,7 +32,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: db
+      PMA_HOST: localhost
       PMA_PORT: 6000
       UPLOAD_LIMIT: 1024M
     ports:
