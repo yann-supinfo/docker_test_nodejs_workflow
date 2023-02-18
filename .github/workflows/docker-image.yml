@@ -27,4 +27,6 @@ jobs:
       run: docker-compose up -d
     - name: Run tests in the Docker container
       run: docker exec docker_test_nodejs_workflow_app_1   bash -c "npm test"
+    - name: Show app log
+      run: docker logs docker_test_nodejs_workflow_app_1 
 
