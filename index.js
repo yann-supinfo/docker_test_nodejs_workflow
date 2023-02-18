@@ -13,12 +13,12 @@ function sleepSync(milliseconds) {
 
 sleepSync(4000)
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  'database',
+  'database',
+  'database',
   {
     port: 6000,
-    host: '0.0.0.0',
+    host: 'database',
     dialect: 'mysql'
   }
 );
