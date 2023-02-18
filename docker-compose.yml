@@ -12,8 +12,7 @@ services:
       - "5000:5000"
     depends_on:
       - database
-    networks:
-      - mynetwork
+
   database:
     image: mysql
     restart: always
@@ -27,8 +26,7 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "6000:6000"
-    networks:
-      - mynetwork
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
@@ -39,13 +37,9 @@ services:
       - "8080:80"
     depends_on:
       - database
-    networks:
-      - mynetwork
+
     
 
 volumes:
   db_data:
 
-networks:
-  mynetwork:
-    driver: bridge
