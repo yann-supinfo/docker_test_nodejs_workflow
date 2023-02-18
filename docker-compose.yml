@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - mynetwork
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 1024M
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    
+
+volumes:
+  db_data:
+
+networks:
+  mynetwork:
+    driver: bridge
