@@ -4,7 +4,7 @@ const app = express();
 const Sequelize = require('sequelize');
 
 console.log('DEBUG', process.env.DB_NAME, process.env.DB_USER)
-
+await new Promise(resolve => setTimeout(resolve, 5000));
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
