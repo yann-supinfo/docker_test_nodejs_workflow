@@ -26,5 +26,5 @@ jobs:
         UPLOAD_LIMIT: ${{ secrets.UPLOAD_LIMIT }}
       run: docker-compose up -d
     - name: Run tests in the Docker container
-      run: docker exec nodejs_test_docker-app-1 bash -c "npm test"
+      run: docker exec docker_test_nodejs_workflow_app_1   bash -c "npm test"
 
