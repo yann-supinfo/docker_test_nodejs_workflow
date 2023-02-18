@@ -26,14 +26,14 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "6000:6000"
     networks:
       - mynetwork
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: db
-      PMA_PORT: 3306
+      PMA_PORT: 6000
       UPLOAD_LIMIT: 1024M
     ports:
       - "8080:80"
