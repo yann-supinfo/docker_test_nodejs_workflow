@@ -22,7 +22,7 @@ jobs:
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
         PMA_HOST: ${{ secrets.PMA_HOST }}
-        PMA_PORT: ${{ secrets.PMA_PORT. }}
+        PMA_PORT: ${{ secrets.PMA_PORT }}
         UPLOAD_LIMIT: ${{ secrets.UPLOAD_LIMIT }}
       run: docker-compose up -d
     - name: Run tests in the Docker container
