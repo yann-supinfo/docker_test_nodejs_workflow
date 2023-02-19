@@ -10,7 +10,7 @@ function sleepSync(milliseconds) {
     // attendre
   }
 }
-
+console.log("HOST", process.env.DB_HOST)
 sleepSync(10000)
 const sequelize = new Sequelize(
   'database',
