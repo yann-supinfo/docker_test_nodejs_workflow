@@ -29,11 +29,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      env:
-        PORT: ${{ secrets.PORT }}
-        PMA_HOST: ${{ secrets.PMA_HOST }}
-        PMA_PORT: ${{ secrets.PMA_PORT }}
-        UPLOAD_LIMIT: ${{ secrets.UPLOAD_LIMIT }}
       run: printenv  && docker-compose up -d 
     - name: Debug
       run: printenv
