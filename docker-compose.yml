@@ -4,7 +4,7 @@ services:
   app:
     build: .
     environment:
-      - DB_HOST=database
+      - DB_HOST=${MYSQL_HOST}
       - DB_NAME=database
       - DB_USER=database
       - DB_PASSWORD=database
