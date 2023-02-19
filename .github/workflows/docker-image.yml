@@ -28,14 +28,14 @@ jobs:
                   MYSQL_ROOT_PASSWORD: database
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: printenv  && docker-compose up -d
     - name: Get MySQL service ID
       id: mysql-service
-      run: container-id=$(docker ps | grep -i mysql | awk '{print $1}'
+      run: container-id=$(docker ps | grep -i mysql | awk '{print $1}')
     - name: Get Github network gateway address
       id: github-network
       run: echo docker inspect -f '{{range.NetworkSettings.Networks}}{{.Gateway}}{{end}}' ${{ steps.mysql-service.outputs.container-id }}
+    - name: Build the Docker image
+      run: printenv  && docker-compose up -d
     - name: Debug
       run: printenv
     - name: Show app log
