@@ -11,13 +11,13 @@ function sleepSync(milliseconds) {
   }
 }
 
-sleepSync(60000)
+sleepSync(10000)
 const sequelize = new Sequelize(
   'database',
   'database',
   'database',
   {
-    port: 6000,
+    port: 3600,
     host: 'database',
     dialect: 'mysql'
   }
