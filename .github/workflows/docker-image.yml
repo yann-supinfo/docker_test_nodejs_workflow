@@ -21,6 +21,11 @@ jobs:
                          --health-interval=5s
                          --health-timeout=2s
                          --health-retries=3
+                env:
+                  MYSQL_DATABASE: database
+                  MYSQL_USER: database
+                  MYSQL_PASSWORD: database
+                  MYSQL_ROOT_PASSWORD: database
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
