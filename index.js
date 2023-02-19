@@ -10,7 +10,7 @@ function sleepSync(milliseconds) {
     // attendre
   }
 }
-console.log("HOST", process.env.DB_HOST)
+console.log("HOST", import.meta.env.DB_HOST)
 sleepSync(10000)
 const sequelize = new Sequelize(
   'database',
@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
   'database',
   {
     port: 32768,
-    host: process.env.DB_HOST,
+    host: import.meta.env.DB_HOST,
     dialect: 'mysql'
   }
 );
