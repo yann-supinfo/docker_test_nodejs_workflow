@@ -32,6 +32,8 @@ jobs:
       id: github-network
       run: docker inspect -f '{{range.NetworkSettings.Networks}}{{.Gateway}}{{end}}' $(docker ps | grep -i mysql | awk '{print $1}')
     - name: Build the Docker image
+      env: 
+        DB_HOST: docker inspect -f '{{range.NetworkSettings.Networks}}{{.Gateway}}{{end}}' $(docker ps | grep -i mysql | awk '{print $1}')
       run: printenv  && docker-compose up -d
     - name: Debug
       run: printenv
