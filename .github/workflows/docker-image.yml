@@ -36,6 +36,8 @@ jobs:
       run: export DB_HOST=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.Gateway}}{{end}}' $(docker ps | grep -i mysql | awk '{print $1}'))
            && echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
     - name: Build the Docker image
+      env:
+        DB_HOST: '172.8.0.1'
       run: printenv  && docker-compose up -d
     - name: Debug
       run: printenv
