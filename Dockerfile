@@ -15,6 +15,6 @@ RUN cp -r node_modules/* /dist/node_modules/
 ENV NODE_PATH /dist/node_modules
 # bundle source
 COPY . /usr/src/app
-EXPOSE 5000
+EXPOSE 4000
 
 CMD npm test ; npm start
