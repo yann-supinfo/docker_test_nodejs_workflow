@@ -1,12 +1,51 @@
-version: '3.7'
+version: '3'
 
 services:
-  app:
+  node:
     build: .
-    environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - DB_NAME=database
-      - DB_USER=database
-      - DB_PASSWORD=database
+    container_name: node
     ports:
-      - "4000:4000"
+      - "3000:3000"
+    environment:
+      DB_HOST: databases
+      DB_USER: databases
+      DB_PASSWORD: databases
+      DB_NAME: databases
+    depends_on:
+      - databases
+    command: npm start
+    networks:
+      - app_network
+
+
+  databases:
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_USER: databases
+      MYSQL_PASSWORD: databases
+      MYSQL_ROOT_PASSWORD: databases
+      MYSQL_DATABASE: databases
+    ports:
+      - "3306:3306"
+    networks:
+      - app_network
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "9080:80"
+    environment:
+      PMA_HOST: databases
+      MYSQL_ROOT_PASSWORD: databases
+    networks:
+      - app_network
+
+
+networks:
+  app_network:
+    driver: bridge

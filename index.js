@@ -1,44 +1,39 @@
-require('dotenv').config()
 const express = require('express');
+const { Sequelize, DataTypes } = require('sequelize');
+const db = require('./models');
+
 const app = express();
-const Sequelize = require('sequelize');
 
-console.log('DEBUG', process.env.DB_NAME, process.env.DB_USER)
-function sleepSync(milliseconds) {
-  const start = new Date().getTime();
-  while (new Date().getTime() - start < milliseconds) {
-    // attendre
-  }
-}
-console.log("HOST", process.env.MYSQL_HOST)
-sleepSync(10000)
-const sequelize = new Sequelize(
-  'database',
-  'database',
-  'database',
-  {
-    port: 32768,
-    host: process.env.MYSQL_HOST,
-    dialect: 'mysql'
-  }
-);
-
-
-
-sequelize
-  .authenticate()
+// Create a new Sequelize instance
+console.log(process.env.DB_USER, process.env.DB_PASSWORD)
+db.sequelize.sync()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    console.log("Synced db.");
   })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
+  .catch((err) => {
+    console.log("Failed to sync db: " + err.message);
   });
+// Test the connection
 
-app.get('/', (req, res) => {
-  res.send('<h1 style="width:200px;height:200px;background-color:blue;">New Title</h1>');
+// Define the route
+app.get('/', async (req, res) => {
+    const chambres = await db.chambre.findAll({
+        include: [db.hotel]
+      });
+
+
+  
+      const json = JSON.stringify(chambres, null, 2); // Indentation de 2 espaces pour une meilleure lisibilité
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Length', Buffer.byteLength(json));
+      res.setHeader('Access-Control-Allow-Origin', '*'); // Permettre l'accès à partir de n'importe quel domaine
+      res.send(json);
+  // Get all hotels
+
 });
 
-app.listen(4000, () => {
-  console.log("HOST", process.env.MYSQL_HOST)   
-  console.log(`Examples app listening on port ${process.env.PORT}!`)
+// Start the server
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
