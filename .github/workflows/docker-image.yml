@@ -36,7 +36,9 @@ jobs:
       run: export MYSQL_HOST=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.Gateway}}{{end}}' $(docker ps | grep -i mysql | awk '{print $1}'))
            && echo "MYSQL_HOST=$MYSQL_HOST" >> $GITHUB_ENV
     - name: Build the Docker image
-      run: printenv  && docker-compose up -d
+      run: printenv  && docker build --tag node_back:latest .
+    - name: Run the container
+      run: docker run --env MYSQL_HOST=$MYSQL_HOST --env DB_NAME=$MYSQL_DATABASE --env DB_USER=$MYSQL_USER --env DB_PASSWORD=$MYSQL_PASSWORD --name node_back_end node_back:latest
     - name: Debug
       run: printenv
     - name: Show app log
