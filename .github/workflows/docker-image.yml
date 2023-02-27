@@ -38,7 +38,7 @@ jobs:
     - name: Build the Docker image
       run: printenv  && docker build --tag node_back:latest .
     - name: Run the container
-      run: docker run --env MYSQL_HOST=$MYSQL_HOST --env DB_NAME=$MYSQL_DATABASE --env DB_USER=$MYSQL_USER --env DB_PASSWORD=$MYSQL_PASSWORD --env MYSQL_PORT=32768 --name node_back_end node_back:latest
+      run: docker run -d --env MYSQL_HOST=$MYSQL_HOST --env DB_NAME=$MYSQL_DATABASE --env DB_USER=$MYSQL_USER --env DB_PASSWORD=$MYSQL_PASSWORD --env MYSQL_PORT=32768 --name node_back_end node_back:latest
     - name: Debug
       run: printenv
     - name: Show app log
