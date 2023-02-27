@@ -1,22 +1,43 @@
+const cors = require("cors");
 const express = require('express');
 const { Sequelize, DataTypes } = require('sequelize');
 const db = require('./models');
 
 const app = express();
 
+var corsOptions = {
+  origin: "http://localhost:8081"
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+// database
+
+const Role = db.role;
 // Create a new Sequelize instance
 console.log(process.env.DB_USER, process.env.DB_PASSWORD)
 db.sequelize.sync()
   .then(() => {
+    initial();
     console.log("Synced db.");
   })
   .catch((err) => {
     console.log("Failed to sync db: " + err.message);
   });
 // Test the connection
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to bezkoder application." });
+});
+
+require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
 
 // Define the route
-app.get('/', async (req, res) => {
+/*app.get('/', async (req, res) => {
     const chambres = await db.chambre.findAll({
         include: [db.hotel]
       });
@@ -31,9 +52,14 @@ app.get('/', async (req, res) => {
   // Get all hotels
 
 });
-
+*/
 // Start the server
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+function initial() {
+  console.log('///////////////////////////////////////// CALLED ////////////////////////////')
+
+}
