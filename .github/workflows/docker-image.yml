@@ -42,8 +42,8 @@ jobs:
     - name: Debug
       run: printenv
     - name: Show app log
-      run: docker ps && docker logs docker_test_nodejs_workflow_app_1 
+      run: docker ps && docker logs node_back_end 
     - name: Run tests in the Docker container
-      run: docker exec docker_test_nodejs_workflow_app_1   bash -c "npm test"
+      run: docker exec node_back_end   bash -c "npm test"
 
 
