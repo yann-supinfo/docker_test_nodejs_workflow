@@ -1,7 +1,7 @@
-const mult = (a, b) => {
-    return a * b;
-}
+// const mult = (a, b) => {
+//     return a * b;
+// }
 
-module.exports = {
-    mult : mult
-}
+// module.exports = {
+//     mult : mult
+// }
