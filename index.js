@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 const Role = db.role;
 // Create a new Sequelize instance
 console.log(process.env.DB_USER, process.env.DB_PASSWORD)
-db.sequelize.sync()
+db.sequelize.sync({ force: true })
   .then(() => {
     initial();
     console.log("Synced db.");
@@ -60,6 +60,20 @@ app.listen(PORT, () => {
 });
 
 function initial() {
+  db.role.create({
+    id: 1,
+    name: "user"
+  });
+ 
+  db.role.create({
+    id: 2,
+    name: "moderator"
+  });
+ 
+  db.role.create({
+    id: 3,
+    name: "admin"
+  });
   console.log('///////////////////////////////////////// CALLED ////////////////////////////')
 
 }
