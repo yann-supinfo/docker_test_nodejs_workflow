@@ -219,21 +219,21 @@ describe('User test', () => {
             });
 
             it('should be a valid phone number', async () => {
-                let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456780");
                 expect({user}).to.exist;
-                user = await User.createUser("toto1@email.com", "Passw0rd!", "toto", "titi", "01 23 45 67 89");
+                user = await User.createUser("toto1@email.com", "Passw0rd!", "toto", "titi", "01 23 45 67 81");
                 expect({user}).to.exist;
-                user = await User.createUser("toto2@email.com", "Passw0rd!", "toto", "titi", "01-23-45-67-89");
+                user = await User.createUser("toto2@email.com", "Passw0rd!", "toto", "titi", "01-23-45-67-82");
                 expect({user}).to.exist;
-                user = await User.createUser("toto3@email.com", "Passw0rd!", "toto", "titi", "01.23.45.67.89");
+                user = await User.createUser("toto3@email.com", "Passw0rd!", "toto", "titi", "01.23.45.67.83");
                 expect({user}).to.exist;
-                user = await User.createUser("toto4@email.com", "Passw0rd!", "toto", "titi", "+33123456789");
+                user = await User.createUser("toto4@email.com", "Passw0rd!", "toto", "titi", "+33123456784");
                 expect({user}).to.exist;
-                user = await User.createUser("toto5@email.com", "Passw0rd!", "toto", "titi", "+33 1 23 45 67 89");
+                user = await User.createUser("toto5@email.com", "Passw0rd!", "toto", "titi", "+33 1 23 45 67 85");
                 expect({user}).to.exist;
-                user = await User.createUser("toto6@email.com", "Passw0rd!", "toto", "titi", "+33-1-23-45-67-89");
+                user = await User.createUser("toto6@email.com", "Passw0rd!", "toto", "titi", "+33-1-23-45-67-86");
                 expect({user}).to.exist;
-                user = await User.createUser("toto7@email.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.89");
+                user = await User.createUser("toto7@email.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87");
                 expect({user}).to.exist;
             });
             it('should be a valid phone number', async () => {
@@ -347,9 +347,6 @@ describe('User test', () => {
                 await db.sequelize.drop();
             });
 
-            after(async () => {
-                await db.sequelize.sync();
-            });
             it('throw error table user does not exist', async () => {
                 try {
                     await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
@@ -357,6 +354,10 @@ describe('User test', () => {
                 } catch (error) {
                     assert.strictEqual(error.message, 'users table does not exist');
                 }
+            });
+
+            after(async () => {
+                await db.sequelize.sync();
             });
         });
 
