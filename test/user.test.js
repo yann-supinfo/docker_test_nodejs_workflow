@@ -11,6 +11,12 @@ describe('User test', () => {
 
     describe('User Model', () => {
 
+        before(async () => {
+            await db.role.destroy({ where: {} });
+            await db.reservation.destroy({ where: {} });
+            await db.user.destroy({ where: {} });
+        });
+
         it('should be an object', async () => {
             let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0606060606");
             expect({user}).to.be.an('object');
@@ -22,6 +28,13 @@ describe('User test', () => {
 
         // Email
         describe('User Email', () => {
+
+            before(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should be a valid email', async () => {
                 let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0606060606");
                 expect({user}).to.exist;
@@ -76,6 +89,13 @@ describe('User test', () => {
 
         // Lastname
         describe('User Lastname', () => {
+
+            before(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should be a valid lastname', async () => {
                 let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0606060606");
                 expect({user}).to.exist;
@@ -130,6 +150,13 @@ describe('User test', () => {
 
         // Firstname
         describe('User Firstname', () => {
+
+            before(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should be a valid firstname', async () => {
                 let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0606060606");
                 expect({user}).to.exist;
@@ -184,23 +211,35 @@ describe('User test', () => {
 
         // Phone
         describe('User Phone', () => {
+
+            before(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should be a valid phone number', async () => {
                 let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "01 23 45 67 89");
+                user = await User.createUser("toto1@email.com", "Passw0rd!", "toto", "titi", "01 23 45 67 89");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "01-23-45-67-89");
+                user = await User.createUser("toto2@email.com", "Passw0rd!", "toto", "titi", "01-23-45-67-89");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "01.23.45.67.89");
+                user = await User.createUser("toto3@email.com", "Passw0rd!", "toto", "titi", "01.23.45.67.89");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "+33123456789");
+                user = await User.createUser("toto4@email.com", "Passw0rd!", "toto", "titi", "+33123456789");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "+33 1 23 45 67 89");
+                user = await User.createUser("toto5@email.com", "Passw0rd!", "toto", "titi", "+33 1 23 45 67 89");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "+33-1-23-45-67-89");
+                user = await User.createUser("toto6@email.com", "Passw0rd!", "toto", "titi", "+33-1-23-45-67-89");
                 expect({user}).to.exist;
-                user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.89");
+                user = await User.createUser("toto7@email.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.89");
                 expect({user}).to.exist;
+            });
+            it('should be a valid phone number', async () => {
+                let phone = User.formatPhoneNumber("+33 1 23 45 67 89");
+                expect(phone).to.equal("0123456789");
+
             });
             it('throw error invalid format phone number', async () => {
                 try {
@@ -250,6 +289,13 @@ describe('User test', () => {
 
         // Password
         describe('User Password', () => {
+
+            beforeEach(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should be a valid password', async () => {
                 let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 expect({user}).to.exist;
@@ -283,6 +329,13 @@ describe('User test', () => {
     describe('User Database Creation', () => {
         
         describe('Table User Exist', () => {
+
+            before(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should exist', async () => {
                 let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 expect({user}).to.exist;
@@ -308,6 +361,13 @@ describe('User test', () => {
         });
 
         describe('User Insertion', () => {
+
+            beforeEach(async () => {
+                await db.role.destroy({ where: {} });
+                await db.reservation.destroy({ where: {} });
+                await db.user.destroy({ where: {} });
+            });
+
             it('should insert corretly', async () => {
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 const user = await db.user.findOne({ where: {email: "toto@email.com"} });
