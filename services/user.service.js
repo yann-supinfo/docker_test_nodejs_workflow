@@ -12,10 +12,7 @@ const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
 // create
 const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
-    if(mail === null) {
-        console.log("DEBUG : ", mail);
-        throw new Error('mail is null');
-    }
+    if(mail === null) throw new Error('mail is null');
     if(mail === "" || typeof mail !== "string") throw new Error('should be a string not empty');
     if(!REGEXP_email.test(mail)) throw new Error('invalid email');
 
@@ -39,10 +36,13 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
     try {
         const queryInterface = db.sequelize.getQueryInterface();
         const tables = await queryInterface.showAllTables();
+
         if(!tables.includes('users')) {
             throw new Error('users table does not exist');
         }
+ 
         if(await db.user.findOne({ where: {email: mail} }) !== null || await db.user.findOne({ where: {telephone: phone} }) !== null) throw new Error('user already exist');
+ 
         const User = await db.user.create({
             email: mail,
             password: bcrypt.hashSync(pwd, 8),
@@ -52,7 +52,7 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
         });
         console.log(`User ${User.nom} ${User.prenom} has been successfully added`);
     } catch (err) {
-        console.log(err);
+
     }
 
 }
