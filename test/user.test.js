@@ -5,8 +5,6 @@ const User = require('../services/user.service')
 const db = require('../models');
 const bcrypt = require("bcryptjs");
 
-
-
 describe('User test', () => {
 
     describe('User Model', () => {
@@ -36,7 +34,7 @@ describe('User test', () => {
             });
 
             it('should be a valid email', async () => {
-                let user = await User.createUser("toto@email", "Passw0rd!", "toto", "titi", "0606060606");
+                let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0606060606");
                 expect({user}).to.exist;
             });
             it('throw error invalid format email', async () => {
@@ -83,6 +81,14 @@ describe('User test', () => {
                     assert.fail('should have thrown an error');
                 } catch (error) {
                     assert.strictEqual(error.message, 'mail is null');
+                }
+            });
+            it('throw error length more than 50', async () => {
+                try {
+                    await User.createUser("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@mail.com", "Passw0rd!", "toto", "titi", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'mail is more than 50 characters');
                 }
             });
         });
@@ -146,6 +152,14 @@ describe('User test', () => {
                     assert.strictEqual(error.message, 'lastname is null');
                 }
             });
+            it('throw error length more than 50', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", "totoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "titi", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'lastname is more than 50 characters');
+                }
+            });
         });
 
         // Firstname
@@ -205,6 +219,14 @@ describe('User test', () => {
                     assert.fail('should have thrown an error');
                 } catch (error) {
                     assert.strictEqual(error.message, 'firstname is null');
+                }
+            });
+            it('throw error length more than 50', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'firstname is more than 50 characters');
                 }
             });
         });
@@ -321,6 +343,14 @@ describe('User test', () => {
                     assert.strictEqual(error.message, 'password is null');
                 }
             });
+            it('throw error length more than 50', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Paaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassw0rd!", "toto", "titi", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'password is more than 50 characters');
+                }
+            });
         });
 
     });
@@ -372,6 +402,7 @@ describe('User test', () => {
             it('should insert corretly', async () => {
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 const user = await db.user.findOne({ where: {email: "toto@email.com"} });
+                console.log("debug : ", user);
                 expect(user.email).to.equal("toto@email.com");
                 expect(true).to.equal(bcrypt.compareSync("Passw0rd!", user.password));
                 expect(user.nom).to.equal("toto");
@@ -388,8 +419,7 @@ describe('User test', () => {
                 }
             });
         });
-
-        
+      
     });
 
 });
