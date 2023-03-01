@@ -64,6 +64,14 @@ describe('User test', () => {
                     assert.strictEqual(error.message, 'should be a string not empty');
                 }
             });
+            it('throw error null', async () => {
+                try {
+                    await User.createUser(null, "Passw0rd!", "toto", "titi", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'mail is null');
+                }
+            });
         });
 
         // Lastname
@@ -110,6 +118,14 @@ describe('User test', () => {
                     assert.strictEqual(error.message, 'should be a string not empty');
                 }
             });
+            it('throw error null', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", null, "titi", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'lastname is null');
+                }
+            });
         });
 
         // Firstname
@@ -154,6 +170,14 @@ describe('User test', () => {
                     assert.fail('should have thrown an error');
                 } catch (error) {
                     assert.strictEqual(error.message, 'should be a string not empty');
+                }
+            });
+            it('throw error null', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", "toto", null, "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'firstname is null');
                 }
             });
         });
@@ -214,6 +238,14 @@ describe('User test', () => {
                     assert.strictEqual(error.message, 'should be a string not empty');
                 }
             });
+            it('throw error null', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", null);
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'phone is null');
+                }
+            });
         });
 
         // Password
@@ -234,6 +266,14 @@ describe('User test', () => {
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 const user = await db.user.findOne({ where: {email: "toto@email.com"} });
                 expect(user.password).to.not.equal("Passw0rd!");
+            });
+            it('throw error null', async () => {
+                try {
+                    await User.createUser("toto@email.com", null, "toto", "titi", "0606060606");
+                    assert.fail('should have thrown an error');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'password is null');
+                }
             });
         });
 
@@ -267,8 +307,8 @@ describe('User test', () => {
             });
         });
 
-        describe('User Insertion Correct', () => {
-            it('should exist', async () => {
+        describe('User Insertion', () => {
+            it('should insert corretly', async () => {
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 const user = await db.user.findOne({ where: {email: "toto@email.com"} });
                 expect(user.email).to.equal("toto@email.com");
@@ -276,6 +316,15 @@ describe('User test', () => {
                 expect(user.nom).to.equal("toto");
                 expect(user.prenom).to.equal("titi");
                 expect(user.telephone).to.equal("0123456789");
+            });
+
+            it('throw error user already exist', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                    assert.fail('user already exist');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'user already exist');
+                }
             });
         });
 
