@@ -2,14 +2,14 @@ const db = require('../models');
 const { Sequelize } = require('sequelize');
 const bcrypt = require("bcryptjs");
 
-
-
 const REGEXP_email = /^\S+@\S+\.\S+$/;
 const REGEXP_name = /^[a-zA-Z]+$/;
 const REGEXP_phone = /^(0|\+33)[-. ]?[1-9]{1}([-. ]?[0-9]{2}){4}$/;
 const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
 
-// create
+/* C.R.U.D Function */
+
+    /* Create */
 const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
     if(mail === null) throw new Error('mail is null');
@@ -57,6 +57,24 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
 }
 
+    /* Read */
+const findById = async (id) => {
+
+    // throw Error id = Integer
+
+    try {
+        const userSelected = await db.user.findByPk(id);
+        if (userSelected) {
+            console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+            return userSelected;
+        }
+        console.log(`Utilisateur avec ID ${id} n'existe pas`)
+    } catch(err) {
+        console.error('Impossible de se connecter à la base de données : ', erreur);
+    }
+}
+
+/* Additionnal Function */
 const formatPhoneNumber = (number) => {
     const strippedPrefix = number.replace(/^\+33/, '0');
     const digitsOnly = strippedPrefix.replace(/\D/g, '');
@@ -66,6 +84,7 @@ const formatPhoneNumber = (number) => {
     return null;
 }
 
+/* Exports */
 module.exports = {
     createUser,
     formatPhoneNumber,
