@@ -36,7 +36,7 @@ describe('User test', () => {
             });
 
             it('should be a valid email', async () => {
-                let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0606060606");
+                let user = await User.createUser("toto@email", "Passw0rd!", "toto", "titi", "0606060606");
                 expect({user}).to.exist;
             });
             it('throw error invalid format email', async () => {
