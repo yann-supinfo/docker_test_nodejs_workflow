@@ -52,7 +52,7 @@ db.ROLES = ["user", "admin", "moderator"];
     console.error('An error occurred while synchronizing the models:', error);
   });*/
 
-  (async () => {
+ /* (async () => {
     try {
         await db.sequelize.sync({ force: true });
       console.log(db.hotel, hotelSeed)
@@ -109,6 +109,6 @@ db.ROLES = ["user", "admin", "moderator"];
     } catch (err) {
       console.error('Erreur lors du chargement des données de graine :', err);
     }
-  })();
+  })();*/
 
 module.exports = db;
