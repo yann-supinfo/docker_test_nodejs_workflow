@@ -63,22 +63,92 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
 }
 
     /* Read */
+        /* By Id */
 const findById = async (id) => {
 
     if(id === null) throw new Error('id is null');
-    if(typeof id !== "integer") throw new Error('should be an integer');
+    if(typeof id !== "number") throw new Error('should be an integer');
 
     try {
-        const userSelected = await db.user.findByPk(id);
-        if (userSelected) {
-            console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
-            return userSelected;
+
+        const queryInterface = db.sequelize.getQueryInterface();
+        const tables = await queryInterface.showAllTables();
+
+        if(!tables.includes('users')) {
+            throw new Error('user table does not exist');
         }
-        console.log(`Utilisateur avec ID ${id} n'existe pas`)
+
+        const userSelected = await db.user.findByPk(id);
+        
+        if (!userSelected) throw new Error('User Id does not exist');
+
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        return userSelected;
+                
     } catch(err) {
-        console.error('Impossible de se connecter à la base de données : ', erreur);
+
     }
 }
+        /* By Email */
+const findByEmail = async (mail) => {
+
+    if(mail === null) throw new Error('email is null');
+    if(typeof mail !== "string") throw new Error('should be a string');
+
+    try {
+
+        const queryInterface = db.sequelize.getQueryInterface();
+        const tables = await queryInterface.showAllTables();
+
+        if(!tables.includes('users')) {
+            throw new Error('user table does not exist');
+        }
+
+        const userSelected = await db.user.findOne({where: {email: mail} });
+        
+        if (!userSelected) throw new Error('User email does not exist');
+
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        return userSelected;
+                
+    } catch(err) {
+
+    }
+}
+        /* By Phone number */
+const findByPhone = async (phone) => {
+
+    if(phone === null) throw new Error('phone is null');
+    if(typeof phone !== "string") throw new Error('should be a string');
+
+    phone = formatPhoneNumber(phone);
+
+    try {
+
+        const queryInterface = db.sequelize.getQueryInterface();
+        const tables = await queryInterface.showAllTables();
+
+        if(!tables.includes('users')) {
+            throw new Error('user table does not exist');
+        }
+
+        const userSelected = await db.user.findOne({where: {telephone: phone} });
+        
+        if (!userSelected) throw new Error('User phone does not exist');
+
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        return userSelected;
+                
+    } catch(err) {
+
+    }
+}
+
+    /* Update */
+// here
+
+    /* Delete */
+// here
 
 /* Additionnal Function */
 const formatPhoneNumber = (number) => {
@@ -94,5 +164,7 @@ const formatPhoneNumber = (number) => {
 module.exports = {
     createUser,
     findById,
+    findByEmail,
+    findByPhone,
     formatPhoneNumber,
 }
