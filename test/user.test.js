@@ -10,8 +10,6 @@ describe('User test', () => {
     describe('User Model', () => {
 
         before(async () => {
-            await db.role.destroy({ where: {} });
-            await db.reservation.destroy({ where: {} });
             await db.user.destroy({ where: {} });
         });
 
@@ -22,14 +20,12 @@ describe('User test', () => {
 
     });
 
-    describe('User Parameters', () => {
+    describe('CreateUser function', () => {
 
         // Email
         describe('User Email', () => {
 
             before(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
                 await db.user.destroy({ where: {} });
             });
 
@@ -97,8 +93,6 @@ describe('User test', () => {
         describe('User Lastname', () => {
 
             before(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
                 await db.user.destroy({ where: {} });
             });
 
@@ -166,8 +160,6 @@ describe('User test', () => {
         describe('User Firstname', () => {
 
             before(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
                 await db.user.destroy({ where: {} });
             });
 
@@ -235,8 +227,6 @@ describe('User test', () => {
         describe('User Phone', () => {
 
             before(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
                 await db.user.destroy({ where: {} });
             });
 
@@ -313,8 +303,6 @@ describe('User test', () => {
         describe('User Password', () => {
 
             beforeEach(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
                 await db.user.destroy({ where: {} });
             });
 
@@ -353,34 +341,107 @@ describe('User test', () => {
             });
         });
 
-    });
+        // Table User
+        describe('User Database Creation', () => {
+            
+            describe('Table User Exist', () => {
 
-    // Table User
-    describe('User Database Creation', () => {
+                before(async () => {
+                    await db.user.destroy({ where: {} });
+                });
+
+                it('should exist', async () => {
+                    let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                    expect({user}).to.exist;
+                });
+            });
+
+            describe('Table User Doesn\'t Exist', () => {
+                before(async () => {
+                    await db.sequelize.drop();
+                });
+
+                it('throw error table user does not exist', async () => {
+                    try {
+                        await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                        assert.fail('users table does not exist');
+                    } catch (error) {
+                        assert.strictEqual(error.message, 'users table does not exist');
+                    }
+                });
+
+                after(async () => {
+                    await db.sequelize.sync();
+                });
+            });
+
+            describe('User Insertion', () => {
+
+                beforeEach(async () => {
+                    await db.user.destroy({ where: {} });
+                });
+
+                it('should insert corretly', async () => {
+                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                    const user = await db.user.findOne({ where: {email: "toto@email.com"} });
+                    expect(user.email).to.equal("toto@email.com");
+                    expect(true).to.equal(bcrypt.compareSync("Passw0rd!", user.password));
+                    expect(user.nom).to.equal("toto");
+                    expect(user.prenom).to.equal("titi");
+                    expect(user.telephone).to.equal("0123456789");
+                });
+
+                it('throw error user already exist', async () => {
+                    try {
+                        await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                        assert.fail('user already exist');
+                    } catch (error) {
+                        assert.strictEqual(error.message, 'user already exist');
+                    }
+                });
+            });
         
-        describe('Table User Exist', () => {
-
-            before(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
-                await db.user.destroy({ where: {} });
-            });
-
-            it('should exist', async () => {
-                let user = await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-                expect({user}).to.exist;
-            });
         });
 
-        describe('Table User Doesn\'t Exist', () => {
+    });
+
+    describe('findById function', () => {
+
+        describe('Read Database User', () => {
+
+            before(async () => {
+                await db.user.destroy({ where: {} });
+                await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
+            });
+
+            it('should get the right user', async () => {
+                const userSelected = await User.findById(4);
+                expect(userSelected.email).to.equal("tototiti@email.com");
+                expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
+                expect(userSelected.nom).to.equal("toto");
+                expect(userSelected.prenom).to.equal("titi");
+                expect(userSelected.telephone).to.equal("0123456781");
+            });
+
+            it('throw error id does not exist', async () => {
+                try {
+                    await User.findById(1);
+                } catch (error) {
+                    assert.strictEqual(error.message, 'User Id does not exist');
+                }
+            });
+
+        });
+
+        describe('Table User', () => {
             before(async () => {
                 await db.sequelize.drop();
             });
 
             it('throw error table user does not exist', async () => {
                 try {
-                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-                    assert.fail('users table does not exist');
+                    await User.findById(1);
                 } catch (error) {
                     assert.strictEqual(error.message, 'users table does not exist');
                 }
@@ -391,35 +452,170 @@ describe('User test', () => {
             });
         });
 
-        describe('User Insertion', () => {
+        describe('User Id', () => {
 
-            beforeEach(async () => {
-                await db.role.destroy({ where: {} });
-                await db.reservation.destroy({ where: {} });
-                await db.user.destroy({ where: {} });
-            });
-
-            it('should insert corretly', async () => {
-                await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-                const user = await db.user.findOne({ where: {email: "toto@email.com"} });
-                console.log("debug : ", user);
-                expect(user.email).to.equal("toto@email.com");
-                expect(true).to.equal(bcrypt.compareSync("Passw0rd!", user.password));
-                expect(user.nom).to.equal("toto");
-                expect(user.prenom).to.equal("titi");
-                expect(user.telephone).to.equal("0123456789");
-            });
-
-            it('throw error user already exist', async () => {
+            it('throw error id is not number', async () => {
                 try {
-                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-                    assert.fail('user already exist');
+                    await User.findById("test");
                 } catch (error) {
-                    assert.strictEqual(error.message, 'user already exist');
+                    assert.strictEqual(error.message, 'should be an integer');
+                }
+            });
+
+            it('throw error id is null', async () => {
+                try {
+                    await User.findById(null);
+                } catch (error) {
+                    assert.strictEqual(error.message, 'id is null');
                 }
             });
         });
-      
+
     });
+
+    describe('findByEmail function', () => {
+
+        describe('Read Database User', () => {
+
+            before(async () => {
+                await db.user.destroy({ where: {} });
+                await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
+            });
+
+            it('should get the right user', async () => {
+                const userSelected = await User.findByEmail("tototiti@email.com");
+                expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
+                expect(userSelected.nom).to.equal("toto");
+                expect(userSelected.prenom).to.equal("titi");
+                expect(userSelected.telephone).to.equal("0123456781");
+            });
+
+            it('throw error email does not exist', async () => {
+                try {
+                    await User.findByEmail("failtototiti@email.com");
+                } catch (error) {
+                    assert.strictEqual(error.message, 'User email does not exist');
+                }
+                try {
+                    await User.findByEmail("");
+                } catch (error) {
+                    assert.strictEqual(error.message, 'User email does not exist');
+                }
+            });
+
+        });
+
+        describe('Table User', () => {
+            before(async () => {
+                await db.sequelize.drop();
+            });
+
+            it('throw error table user does not exist', async () => {
+                try {
+                    await User.findByEmail("tototiti@email.com");
+                } catch (error) {
+                    assert.strictEqual(error.message, 'users table does not exist');
+                }
+            });
+
+            after(async () => {
+                await db.sequelize.sync();
+            });
+        });
+
+        describe('User Email', () => {
+
+            it('throw error email is not string', async () => {
+                try {
+                    await User.findByEmail(2);
+                } catch (error) {
+                    assert.strictEqual(error.message, 'should be a string');
+                }
+            });
+
+            it('throw error Email is null', async () => {
+                try {
+                    await User.findByEmail(null);
+                } catch (error) {
+                    assert.strictEqual(error.message, 'email is null');
+                }
+            });
+        });
+
+    });
+
+    describe('findByPhone function', () => {
+
+        describe('Read Database User', () => {
+
+            before(async () => {
+                await db.user.destroy({ where: {} });
+                await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
+            });
+
+            it('should get the right user', async () => {
+                const userSelected = await User.findByPhone("0123456781");
+                expect(userSelected.email).to.equal("tototiti@email.com");
+                expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
+                expect(userSelected.nom).to.equal("toto");
+                expect(userSelected.prenom).to.equal("titi");
+            });
+
+            it('throw error phone does not exist', async () => {
+                try {
+                    await User.findByPhone("1111111111");
+                } catch (error) {
+                    assert.strictEqual(error.message, 'User phone does not exist');
+                }
+                try {
+                    await User.findByPhone("");
+                } catch (error) {
+                    assert.strictEqual(error.message, 'User phone does not exist');
+                }
+            });
+
+        });
+
+        describe('Table User', () => {
+            before(async () => {
+                await db.sequelize.drop();
+            });
+
+            it('throw error table user does not exist', async () => {
+                try {
+                    await User.findByPhone("0123456781");
+                } catch (error) {
+                    assert.strictEqual(error.message, 'users table does not exist');
+                }
+            });
+
+            after(async () => {
+                await db.sequelize.sync();
+            });
+        });
+
+        describe('User Phone', () => {
+
+            it('throw error phone is not string', async () => {
+                try {
+                    await User.findByPhone(0101010101);
+                } catch (error) {
+                    assert.strictEqual(error.message, 'should be a string');
+                }
+            });
+
+            it('throw error phone is null', async () => {
+                try {
+                    await User.findByPhone(null);
+                } catch (error) {
+                    assert.strictEqual(error.message, 'phone is null');
+                }
+            });
+        });
+
+    });
+    
 
 });
