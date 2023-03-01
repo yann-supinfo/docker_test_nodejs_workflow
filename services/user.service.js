@@ -34,6 +34,8 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
     if(pwd === null) throw new Error('password is null');
     if(!REGEXP_password.test(pwd)) throw new Error('invalid password. It should contain at least : \n- 1 uppercase\n- 1 lowercase\n- 1 special character\n- 1 number\n- 7 characters');
 
+    phone = formatPhoneNumber(phone);
+
     try {
         const queryInterface = db.sequelize.getQueryInterface();
         const tables = await queryInterface.showAllTables();
@@ -55,6 +57,16 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
 }
 
+const formatPhoneNumber = (number) => {
+    const strippedPrefix = number.replace(/^\+33/, '0');
+    const digitsOnly = strippedPrefix.replace(/\D/g, '');
+    if (digitsOnly.length === 10) {
+        return digitsOnly;
+    }
+    return null;
+}
+
 module.exports = {
     createUser,
+    formatPhoneNumber,
 }
