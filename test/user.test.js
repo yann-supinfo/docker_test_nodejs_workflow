@@ -4,7 +4,7 @@ const assert = chai.assert;
 const User = require('../services/user.service')
 const db = require('../models');
 const bcrypt = require("bcryptjs");
-
+db.sequelize.sync({force:true})
 describe('User test', () => {
 
     describe('User Model', () => {
