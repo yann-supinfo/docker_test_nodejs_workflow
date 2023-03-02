@@ -398,16 +398,14 @@ describe('User test', () => {
     describe('findById function', () => {
 
 
-
         
         describe('Read Database User', () => {
             let id = null
             before(async () => {
                 await User.cleanUser();
-                
+               
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 const userdata = await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
-                console.log('user', userdata)
                 id = userdata.id
             });
 
