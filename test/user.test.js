@@ -404,9 +404,10 @@ describe('User test', () => {
             let id = null
             before(async () => {
                 await User.cleanUser();
-               
+                
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 const userdata = await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
+                console.log(userdata)
                 id = userdata.id
             });
 
