@@ -371,7 +371,7 @@ describe('User test', () => {
                 });
 
                 after(async () => {
-                    await db.sequelize.sync();
+                    await db.sequelize.sync({force: true});
                 });
             });
 
@@ -410,13 +410,13 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
             });
 
             it('should get the right user', async () => {
-                const userSelected = await User.findById(4);
+                const userSelected = await User.findById(2);
                 expect(userSelected.email).to.equal("tototiti@email.com");
                 expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
                 expect(userSelected.nom).to.equal("toto");
@@ -448,7 +448,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await db.sequelize.sync();
+                await db.sequelize.sync({force: true});
             });
         });
 
@@ -520,7 +520,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await db.sequelize.sync();
+                await db.sequelize.sync({force: true});
             });
         });
 
@@ -592,7 +592,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await db.sequelize.sync();
+                await db.sequelize.sync({force: true});
             });
         });
 
