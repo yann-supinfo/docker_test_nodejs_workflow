@@ -371,7 +371,7 @@ describe('User test', () => {
                 });
 
                 after(async () => {
-                    await db.sequelize.sync({force: true});
+                    await db.user.sync({force: true});
                 });
             });
 
@@ -410,7 +410,7 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.sequelize.sync({force: true});
+                await db.user.sync({force: true});
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
             });
