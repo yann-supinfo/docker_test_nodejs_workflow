@@ -12,7 +12,7 @@ const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
     /* Create */
 
 const userSync = async () => {
-   await  db.user.sync()
+ //  await  db.user.sync()
 }
 
 const dropUserTable = async () => {
