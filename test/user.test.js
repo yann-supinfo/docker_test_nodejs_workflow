@@ -371,7 +371,7 @@ describe('User test', () => {
                 });
 
                 after(async () => {
-                    await User.userSync();
+                    await User.createTableUser();
                 });
             });
 
@@ -449,7 +449,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await User.userSync();
+                await User.createTableUser();
             });
         });
 
@@ -521,7 +521,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await User.userSync();
+                await User.createTableUser();
             });
         });
 
@@ -593,7 +593,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await User.userSync();
+                await User.createTableUser();
             });
         });
 

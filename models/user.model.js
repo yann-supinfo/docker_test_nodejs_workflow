@@ -11,7 +11,7 @@ const Client = sequelize.define('user', {
   },
   nom: Sequelize.STRING,
   prenom: Sequelize.STRING,
-  telephone: Sequelize.STRING,
+  telephone: Sequelize.STRING
 });
 
 return Client;

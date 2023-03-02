@@ -11,6 +11,23 @@ const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
 
     /* Create */
 
+const createTableUser = async () => {
+    await  db.createTable('users', {
+        username: {
+            type: Sequelize.STRING
+          },
+          email: {
+            type: Sequelize.STRING
+          },
+          password: {
+            type: Sequelize.STRING
+          },
+          nom: Sequelize.STRING,
+          prenom: Sequelize.STRING,
+          telephone: Sequelize.STRING
+      });
+}
+
 const userSync = async () => {
  //  await  db.user.sync()
 }
@@ -186,5 +203,6 @@ module.exports = {
     formatPhoneNumber,
     dropUserTable,
     cleanUser,
-    userSync
+    userSync,
+    createTableUser
 }
