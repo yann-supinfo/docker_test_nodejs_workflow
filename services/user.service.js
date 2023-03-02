@@ -49,7 +49,7 @@ const userSync = async () => {
 }
 
 const dropUserTable = async () => {
-    await db.sequelize.drop();
+    await db.sequelize.queryInterface.dropTable('users');
 }
 
 const cleanUser = async () => {
