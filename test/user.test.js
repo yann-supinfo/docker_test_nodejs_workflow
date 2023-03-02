@@ -397,6 +397,81 @@ describe('User test', () => {
 
     describe('findById function', () => {
 
+
+        describe('Table User Doesn\'t Exist', () => {
+            before(async () => {
+                await db.sequelize.drop();
+            });
+
+            it('throw error table user does not exist', async () => {
+                try {
+                    await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
+                    assert.fail('users table does not exist');
+                } catch (error) {
+                    assert.strictEqual(error.message, 'users table does not exist');
+                }
+            });
+
+            after(async () => {
+                await db.sequelize.sync({force: true});
+            });
+        });
+
+describe('Table User', () => {
+        before(async () => {
+            await db.sequelize.drop();
+        });
+
+        it('throw error table user does not exist', async () => {
+            try {
+                await User.findById(1);
+            } catch (error) {
+                assert.strictEqual(error.message, 'users table does not exist');
+            }
+        });
+
+        after(async () => {
+            await db.sequelize.sync({force: true});
+        });
+    });
+
+    describe('Table User', () => {
+        before(async () => {
+            await db.sequelize.drop();
+        });
+
+        it('throw error table user does not exist', async () => {
+            try {
+                await User.findByEmail("tototiti@email.com");
+            } catch (error) {
+                assert.strictEqual(error.message, 'users table does not exist');
+            }
+        });
+
+        after(async () => {
+            await db.sequelize.sync({force: true});
+        });
+    });
+
+
+    describe('Table User', () => {
+        before(async () => {
+            await db.sequelize.drop();
+        });
+
+        it('throw error table user does not exist', async () => {
+            try {
+                await User.findByPhone("0123456781");
+            } catch (error) {
+                assert.strictEqual(error.message, 'users table does not exist');
+            }
+        });
+
+        after(async () => {
+            await db.sequelize.sync({force: true});
+        });
+    });
+
         describe('Read Database User', () => {
             let id = null
             before(async () => {
