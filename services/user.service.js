@@ -10,6 +10,23 @@ const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
 /* C.R.U.D Function User */
 
     /* Create */
+
+const userSync = async () => {
+   await  db.user.sync()
+}
+
+const dropUserTable = async () => {
+    await db.sequelize.drop();
+}
+
+const cleanUser = async () => {
+    await db.user.destroy({
+         where: {},
+         truncate: true
+       })
+ }
+ 
+
 const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
     if(mail === null) throw new Error('mail is null');
@@ -167,4 +184,7 @@ module.exports = {
     findByEmail,
     findByPhone,
     formatPhoneNumber,
+    dropUserTable,
+    cleanUser,
+    userSync
 }

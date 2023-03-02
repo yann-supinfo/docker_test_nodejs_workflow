@@ -358,7 +358,7 @@ describe('User test', () => {
 
             describe('Table User Doesn\'t Exist', () => {
                 before(async () => {
-                    await db.sequelize.drop();
+                    await User.dropUserTable();
                 });
 
                 it('throw error table user does not exist', async () => {
@@ -371,7 +371,7 @@ describe('User test', () => {
                 });
 
                 after(async () => {
-                    await db.user.sync();
+                    await User.userSync();
                 });
             });
 
@@ -437,7 +437,7 @@ describe('User test', () => {
 
         describe('Table User', () => {
             before(async () => {
-                await db.sequelize.drop();
+                await User.dropUserTable();
             });
 
             it('throw error table user does not exist', async () => {
@@ -449,7 +449,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await db.sequelize.sync();
+                await User.userSync();
             });
         });
 
@@ -509,7 +509,7 @@ describe('User test', () => {
 
         describe('Table User', () => {
             before(async () => {
-                await db.sequelize.drop();
+                await User.dropUserTable();
             });
 
             it('throw error table user does not exist', async () => {
@@ -521,7 +521,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await db.sequelize.sync();
+                await User.userSync();
             });
         });
 
@@ -581,7 +581,7 @@ describe('User test', () => {
 
         describe('Table User', () => {
             before(async () => {
-                await db.sequelize.drop();
+                await User.dropUserTable();
             });
 
             it('throw error table user does not exist', async () => {
@@ -593,7 +593,7 @@ describe('User test', () => {
             });
 
             after(async () => {
-                await db.sequelize.sync();
+                await User.userSync();
             });
         });
 
