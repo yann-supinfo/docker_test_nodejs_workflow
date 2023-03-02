@@ -12,36 +12,7 @@ const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
     /* Create */
 
 const createTableUser = async () => {
-    await  db.sequelize.queryInterface.createTable('users', {
-          id: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            autoIncrement: true,
-            primaryKey: true
-          },
-          username: {
-            type: Sequelize.STRING
-          },
-          email: {
-            type: Sequelize.STRING
-          },
-          password: {
-            type: Sequelize.STRING
-          },
-          nom: Sequelize.STRING,
-          prenom: Sequelize.STRING,
-          telephone: Sequelize.STRING,
-          createdAt: {
-            type: Sequelize.DATE,
-            allowNull: false,
-            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-          },
-          updatedAt: {
-            type: Sequelize.DATE,
-            allowNull: false,
-            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-          }
-      });
+    await  db.sequelize.sync({force:true})
 }
 
 const userSync = async () => {
@@ -49,7 +20,7 @@ const userSync = async () => {
 }
 
 const dropUserTable = async () => {
-    await db.sequelize.queryInterface.dropTable('users');
+    await db.sequelize.drop();
 }
 
 const cleanUser = async () => {
