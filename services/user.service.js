@@ -12,7 +12,7 @@ const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
     /* Create */
 
 const createTableUser = async () => {
-    await  db.createTable('users', {
+    await  db.sequelize.createTable('users', {
         username: {
             type: Sequelize.STRING
           },
