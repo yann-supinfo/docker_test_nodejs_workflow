@@ -410,7 +410,7 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await User.cleanUser();
                
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
@@ -479,7 +479,7 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await User.cleanUser();
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
             });
