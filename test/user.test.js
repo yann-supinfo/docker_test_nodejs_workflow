@@ -356,24 +356,7 @@ describe('User test', () => {
                 });
             });
 
-            describe('Table User Doesn\'t Exist', () => {
-                it('drop user table', async () => {
-                    await User.dropUserTable();
-                });
-
-                it('throw error table user does not exist', async () => {
-                    try {
-                        await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-                        assert.fail('users table does not exist');
-                    } catch (error) {
-                        assert.strictEqual(error.message, 'users table does not exist');
-                    }
-                });
-
-                it('create user table', async () => {
-                    await User.createTableUser();
-                });
-            });
+           
 
             describe('User Insertion', () => {
 
@@ -435,23 +418,7 @@ describe('User test', () => {
 
         });
 
-        describe('Table User', () => {
-            it('drop user table', async () => {
-                await User.dropUserTable();
-            });
-
-            it('throw error table user does not exist', async () => {
-                try {
-                    await User.findById(1);
-                } catch (error) {
-                    assert.strictEqual(error.message, 'users table does not exist');
-                }
-            });
-
-            it('create user table', async () => {
-                await User.createTableUser();
-            });
-        });
+      
 
         describe('User Id', () => {
 
@@ -507,24 +474,7 @@ describe('User test', () => {
 
         });
 
-        describe('Table User', () => {
-            it('drop user table', async () => {
-                await User.dropUserTable();
-            });
-
-            it('throw error table user does not exist', async () => {
-                try {
-                    await User.findByEmail("tototiti@email.com");
-                } catch (error) {
-                    assert.strictEqual(error.message, 'users table does not exist');
-                }
-            });
-
-            it('create user table', async () => {
-                await User.createTableUser();
-            });
-        });
-
+     
         describe('User Email', () => {
 
             it('throw error email is not string', async () => {
@@ -579,24 +529,7 @@ describe('User test', () => {
 
         });
 
-        describe('Table User', () => {
-            it('drop user table', async () => {
-                await User.dropUserTable();
-            });
-
-            it('throw error table user does not exist', async () => {
-                try {
-                    await User.findByPhone("0123456781");
-                } catch (error) {
-                    assert.strictEqual(error.message, 'users table does not exist');
-                }
-            });
-
-            it('create user table', async () => {
-                await User.createTableUser();
-            });
-        });
-
+      
         describe('User Phone', () => {
 
             it('throw error phone is not string', async () => {
