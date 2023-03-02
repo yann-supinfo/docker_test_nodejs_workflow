@@ -72,7 +72,7 @@ const findById = async (id) => {
     try {
 
         const queryInterface = db.sequelize.getQueryInterface();
-        const tables = await queryInterface.showAllTables();
+        const tables = await queryInterface.showAllSchemas();
 
         if(!tables.includes('users')) {
             throw new Error('users table does not exist');
