@@ -39,11 +39,11 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
     let encryptedPassword = bcrypt.hashSync(pwd, 8);
 
     try {
-        const queryInterface = db.sequelize.getQueryInterface();
+        const queryInterface = await db.sequelize.getQueryInterface();
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('users table does not exist');
         }
 
         if(await db.user.findOne({ where: {email: mail} }) !== null || await db.user.findOne({ where: {telephone: phone} }) !== null) throw new Error('user already exist');
@@ -71,8 +71,8 @@ const findById = async (id) => {
 
     try {
 
-        const queryInterface = db.sequelize.getQueryInterface();
-        const tables = await queryInterface.showAllSchemas();
+        const queryInterface = await db.sequelize.getQueryInterface();
+        const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
             throw new Error('users table does not exist');
@@ -97,11 +97,11 @@ const findByEmail = async (mail) => {
 
     try {
 
-        const queryInterface = db.sequelize.getQueryInterface();
+        const queryInterface = await db.sequelize.getQueryInterface();
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('users table does not exist');
         }
 
         const userSelected = await db.user.findOne({where: {email: mail} });
@@ -125,11 +125,11 @@ const findByPhone = async (phone) => {
 
     try {
 
-        const queryInterface = db.sequelize.getQueryInterface();
+        const queryInterface = await db.sequelize.getQueryInterface();
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('users table does not exist');
         }
 
         const userSelected = await db.user.findOne({where: {telephone: phone} });
