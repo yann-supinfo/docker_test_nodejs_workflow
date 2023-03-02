@@ -397,6 +397,9 @@ describe('User test', () => {
 
     describe('findById function', () => {
 
+
+
+        
         describe('Read Database User', () => {
             let id = null
             before(async () => {
