@@ -357,7 +357,7 @@ describe('User test', () => {
             });
 
             describe('Table User Doesn\'t Exist', () => {
-                it(async () => {
+                it('drop user table', async () => {
                     await User.dropUserTable();
                 });
 
@@ -370,7 +370,7 @@ describe('User test', () => {
                     }
                 });
 
-                it(async () => {
+                it('create user table', async () => {
                     await User.createTableUser();
                 });
             });
@@ -436,7 +436,7 @@ describe('User test', () => {
         });
 
         describe('Table User', () => {
-            it(async () => {
+            it('drop user table', async () => {
                 await User.dropUserTable();
             });
 
@@ -448,7 +448,7 @@ describe('User test', () => {
                 }
             });
 
-            it(async () => {
+            it('create user table', async () => {
                 await User.createTableUser();
             });
         });
@@ -508,7 +508,7 @@ describe('User test', () => {
         });
 
         describe('Table User', () => {
-            it(async () => {
+            it('drop user table', async () => {
                 await User.dropUserTable();
             });
 
@@ -520,7 +520,7 @@ describe('User test', () => {
                 }
             });
 
-            it(async () => {
+            it('create user table', async () => {
                 await User.createTableUser();
             });
         });
@@ -580,7 +580,7 @@ describe('User test', () => {
         });
 
         describe('Table User', () => {
-            it(async () => {
+            it('drop user table', async () => {
                 await User.dropUserTable();
             });
 
@@ -592,7 +592,7 @@ describe('User test', () => {
                 }
             });
 
-            it(async () => {
+            it('create user table', async () => {
                 await User.createTableUser();
             });
         });
