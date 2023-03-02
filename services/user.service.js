@@ -29,6 +29,15 @@ const cleanUser = async () => {
        })
  }
  
+ function generateRandomString(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
 
 const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
@@ -62,6 +71,7 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
         const queryInterface = await db.sequelize.getQueryInterface();
         const tables = await queryInterface.showAllTables();
 
+
         if(!tables.includes('users')) {
             throw new Error('users table does not exist');
         }
@@ -69,6 +79,7 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
         if(await db.user.findOne({ where: {email: mail} }) !== null || await db.user.findOne({ where: {telephone: phone} }) !== null) throw new Error('user already exist');
 
         const User = await db.user.create({
+            username:generateRandomString(10),
             email: mail,
             password: encryptedPassword,
             nom: lastname,
@@ -76,6 +87,7 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
             telephone: phone, 
         });
         console.log(`User ${User.nom} ${User.prenom} has been successfully added`);
+        return User
     } catch (err) {
         console.log('//////////////////////////', err.message)
     }
@@ -149,6 +161,7 @@ const findByPhone = async (phone) => {
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
+            
             throw new Error('users table does not exist');
         }
 

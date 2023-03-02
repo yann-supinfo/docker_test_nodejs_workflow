@@ -4,7 +4,7 @@ const assert = chai.assert;
 const User = require('../services/user.service')
 const db = require('../models');
 const bcrypt = require("bcryptjs");
-db.sequelize.sync({force:true})
+
 describe('User test', () => {
 
     describe('User Model', () => {
@@ -361,7 +361,7 @@ describe('User test', () => {
             describe('User Insertion', () => {
 
                 beforeEach(async () => {
-                    
+                    await User.cleanUser();
                 });
 
                 it('should insert corretly', async () => {
@@ -391,16 +391,17 @@ describe('User test', () => {
     describe('findById function', () => {
 
         describe('Read Database User', () => {
-
+            let id = null
             before(async () => {
                 await User.cleanUser();
                
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-                await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
+                const userdata = await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
+                id = userdata.id
             });
 
             it('should get the right user', async () => {
-                const userSelected = await User.findById(2);
+                const userSelected = await User.findById(id);
                 expect(userSelected.email).to.equal("tototiti@email.com");
                 expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
                 expect(userSelected.nom).to.equal("toto");

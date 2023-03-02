@@ -1,11 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
 const Client = sequelize.define('user', {
-  id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true
-  },
   username: {
     type: Sequelize.STRING
   },
@@ -17,17 +11,7 @@ const Client = sequelize.define('user', {
   },
   nom: Sequelize.STRING,
   prenom: Sequelize.STRING,
-  telephone: Sequelize.STRING,
-  createdAt: {
-    type: Sequelize.DATE,
-    allowNull: false,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-  },
-  updatedAt: {
-    type: Sequelize.DATE,
-    allowNull: false,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-  }
+  telephone: Sequelize.STRING
 });
 
 return Client;
