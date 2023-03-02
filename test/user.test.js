@@ -371,7 +371,7 @@ describe('User test', () => {
                 });
 
                 after(async () => {
-                    await db.sequelize.sync();
+                    await db.user.sync();
                 });
             });
 
@@ -409,7 +409,7 @@ describe('User test', () => {
 
         describe('Read Database User', () => {
 
-            beforeEach(async () => {
+            before(async () => {
                 await db.user.destroy({ where: {} });
                
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
