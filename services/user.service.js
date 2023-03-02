@@ -25,8 +25,7 @@ const dropUserTable = async () => {
 
 const cleanUser = async () => {
     await db.user.destroy({
-         where: {},
-         truncate: true
+         where: {}
        })
  }
  
