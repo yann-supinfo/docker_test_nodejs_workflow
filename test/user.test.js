@@ -10,7 +10,7 @@ describe('User test', () => {
     describe('User Model', () => {
 
         before(async () => {
-            await db.user.destroy({ where: {} });
+            await db.sequelize.sync({force: true});
         });
 
         it('should be an object', async () => {
@@ -26,7 +26,7 @@ describe('User test', () => {
         describe('User Email', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
             });
 
             it('should be a valid email', async () => {
@@ -93,7 +93,7 @@ describe('User test', () => {
         describe('User Lastname', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
             });
 
             it('should be a valid lastname', async () => {
@@ -160,7 +160,7 @@ describe('User test', () => {
         describe('User Firstname', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
             });
 
             it('should be a valid firstname', async () => {
@@ -227,7 +227,7 @@ describe('User test', () => {
         describe('User Phone', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
             });
 
             it('should be a valid phone number', async () => {
@@ -303,7 +303,7 @@ describe('User test', () => {
         describe('User Password', () => {
 
             beforeEach(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
             });
 
             it('should be a valid password', async () => {
@@ -347,7 +347,7 @@ describe('User test', () => {
             describe('Table User Exist', () => {
 
                 before(async () => {
-                    await db.user.destroy({ where: {} });
+                    await db.sequelize.sync({force: true});
                 });
 
                 it('should exist', async () => {
@@ -378,7 +378,7 @@ describe('User test', () => {
             describe('User Insertion', () => {
 
                 beforeEach(async () => {
-                    await db.user.destroy({ where: {} });
+                    await db.sequelize.sync({force: true});
                 });
 
                 it('should insert corretly', async () => {
@@ -410,7 +410,8 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.user.sync({force: true});
+                // await db.user.sync({force: true});
+                await db.sequelize.sync({force: true});
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
             });
@@ -478,7 +479,7 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
             });
@@ -550,7 +551,7 @@ describe('User test', () => {
         describe('Read Database User', () => {
 
             before(async () => {
-                await db.user.destroy({ where: {} });
+                await db.sequelize.sync({force: true});
                 await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
                 await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
             });
