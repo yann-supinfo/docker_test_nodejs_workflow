@@ -75,7 +75,7 @@ const findById = async (id) => {
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('users table does not exist');
         }
 
         const userSelected = await db.user.findByPk(id);
