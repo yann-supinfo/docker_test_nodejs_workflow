@@ -2,94 +2,45 @@ const db = require('../models');
 const { Sequelize } = require('sequelize');
 const bcrypt = require("bcryptjs");
 
+// for debugging only
+const colors = require('colors');
+
 const REGEXP_email = /^\S+@\S+\.\S+$/;
 const REGEXP_name = /^[a-zA-Z]+$/;
 const REGEXP_phone = /^(0|\+33)[-. ]?[1-9]{1}([-. ]?[0-9]{2}){4}$/;
-const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
+// const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
 
 /* C.R.U.D Function User */
 
     /* Create */
-
-const createTableUser = async () => {
-    await  db.sequelize.sync({force:true})
-}
-
-const userSync = async () => {
- //  await  db.user.sync()
-}
-
-const dropUserTable = async () => {
-    await db.sequelize.drop();
-}
-
-const cleanUser = async () => {
-    await db.user.destroy({
-         where: {}
-       })
- }
- 
- function generateRandomString(length) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
-
 const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
-    if(mail === null) throw new Error('mail is null');
-    if(mail.length > 50) throw new Error('mail is more than 50 characters');
-    if(mail === "" || typeof mail !== "string") throw new Error('should be a string not empty');
-    if(!REGEXP_email.test(mail)) throw new Error('invalid email');
-
-    if(lastname === null) throw new Error('lastname is null');
-    if(lastname.length > 50) throw new Error('lastname is more than 50 characters');
-    if(lastname === "" || typeof lastname !== "string") throw new Error('should be a string not empty');
-    if(!REGEXP_name.test(lastname)) throw new Error('invalid lastname');
-
-    if(firstname === null) throw new Error('firstname is null');
-    if(firstname.length > 50) throw new Error('firstname is more than 50 characters');
-    if(firstname === "" || typeof firstname !== "string") throw new Error('should be a string not empty');
-    if(!REGEXP_name.test(firstname)) throw new Error('invalid firstname');
-
-    if(phone === null) throw new Error('phone is null');
-    if(phone === "" || typeof phone !== "string") throw new Error('should be a string not empty');
-    if(!REGEXP_phone.test(phone)) throw new Error('invalid phone');
-
-    if(pwd === null) throw new Error('password is null');
-    if(pwd.length > 50) throw new Error('password is more than 50 characters');
-    if(!REGEXP_password.test(pwd)) throw new Error('invalid password. It should contain at least : \n- 1 uppercase\n- 1 lowercase\n- 1 special character\n- 1 number\n- 7 characters');
+    isValidEmail(mail);
+    isValidLastname(lastname);
+    isValidFirstname(firstname);
+    isValidPhone(phone);
+    isValidPassword(pwd);
 
     phone = formatPhoneNumber(phone);
     let encryptedPassword = bcrypt.hashSync(pwd, 8);
 
+    await isExistUserTable();
+    if (await isExistUserEmail(mail)) throw new Error('email already exist'.red);
+    if (await isExistUserPhone(phone)) throw new Error('phone already exist'.red);
+
     try {
-        const queryInterface = await db.sequelize.getQueryInterface();
-        const tables = await queryInterface.showAllTables();
-
-
-        if(!tables.includes('users')) {
-            throw new Error('users table does not exist');
-        }
-
-        if(await db.user.findOne({ where: {email: mail} }) !== null || await db.user.findOne({ where: {telephone: phone} }) !== null) throw new Error('user already exist');
 
         const User = await db.user.create({
-            username:generateRandomString(10),
             email: mail,
             password: encryptedPassword,
             nom: lastname,
             prenom: firstname,
             telephone: phone, 
         });
-        console.log(`User ${User.nom} ${User.prenom} has been successfully added`);
+        console.log(`User ${User.nom} ${User.prenom} has been successfully added`.green);
         return User
     } catch (err) {
-        console.log('//////////////////////////', err.message)
+        console.log(err.message);
     }
 
 }
@@ -97,91 +48,158 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
     /* Read */
         /* By Id */
 const findById = async (id) => {
-
-    if(id === null) throw new Error('id is null');
-    if(typeof id !== "number") throw new Error('should be an integer');
-
+    console.log('findByIda1')
+    isValidId(id);
+    console.log('findByIda2')
+   // await isExistUserTable();
+   console.log('findByIdb1')
+    await isExistUserId(id);
+    console.log('findByIdb2')
     try {
-
-        const queryInterface = await db.sequelize.getQueryInterface();
-        const tables = await queryInterface.showAllTables();
-
-        if(!tables.includes('users')) {
-            throw new Error('users table does not exist');
-        }
-
+        console.log('findById1')
         const userSelected = await db.user.findByPk(id);
-        
-        if (!userSelected) throw new Error('User Id does not exist');
-
-        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        console.log('findById2')
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-        console.log('//////////////////////////', err.message)
+        console.log(err.message);
     }
 }
+
         /* By Email */
 const findByEmail = async (mail) => {
 
-    if(mail === null) throw new Error('email is null');
-    if(typeof mail !== "string") throw new Error('should be a string');
+    isValidEmail(mail);
+    await isExistUserTable();
+    if (!await isExistUserEmail(mail)) throw new Error('User email does not exist'.red);
 
     try {
 
-        const queryInterface = await db.sequelize.getQueryInterface();
-        const tables = await queryInterface.showAllTables();
-
-        if(!tables.includes('users')) {
-            throw new Error('users table does not exist');
-        }
-
         const userSelected = await db.user.findOne({where: {email: mail} });
         
-        if (!userSelected) throw new Error('User email does not exist');
-
-        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-        console.log('//////////////////////////', err.message)
+        console.log(err.message);
     }
 }
+
         /* By Phone number */
 const findByPhone = async (phone) => {
 
-    if(phone === null) throw new Error('phone is null');
-    if(typeof phone !== "string") throw new Error('should be a string');
+    isValidPhone(phone);
+    await isExistUserTable();
+    if (!await isExistUserPhone(phone)) throw new Error('User phone does not exist'.red);
 
     phone = formatPhoneNumber(phone);
 
     try {
 
-        const queryInterface = await db.sequelize.getQueryInterface();
-        const tables = await queryInterface.showAllTables();
-
-        if(!tables.includes('users')) {
-            
-            throw new Error('users table does not exist');
-        }
-
         const userSelected = await db.user.findOne({where: {telephone: phone} });
         
-        if (!userSelected) throw new Error('User phone does not exist');
-
-        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-        console.log('//////////////////////////', err.message)
+        console.log(err.message);
+    }
+}
+
+        /* By Lastname */
+const findByLastname = async (lastname) => {
+
+    isValidLastname(lastname);
+    await isExistUserTable();
+    if (!await isExistUserLastname(lastname)) throw new Error('User lastname does not exist'.red);
+
+    try {
+
+        const userSelected = await db.user.findAll({where: {nom: lastname} });
+        
+        console.log(`Utilisateurs trouvés : ${userSelected[0].nom}`.green);
+        return userSelected;
+                
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+        /* By Firstname */
+const findByFirstname = async (firstname) => {
+
+    isValidFirstname(firstname);
+    await isExistUserTable();
+    if (!await isExistUserFirstname(firstname)) throw new Error('User firstname does not exist'.red);
+
+    try {
+
+        const userSelected = await db.user.findAll({where: {prenom: firstname} });
+        
+        console.log(`Utilisateurs trouvés : ${userSelected[0].prenom}`.green);
+        return userSelected;
+                
+    } catch(err) {
+        console.log(err.message);
     }
 }
 
     /* Update */
-// here
+const updateUser = async (id, userObj) => {
+
+    isValidId(id);
+    isObj(userObj);
+
+    await isExistUserTable();    
+    
+    if (userObj.hasOwnProperty('email')) {
+        isValidEmail(userObj.email);
+        if (await isExistUserEmail(userObj.email)) throw new Error('email already exist'.red);
+    }
+    if (userObj.hasOwnProperty('prenom')) isValidFirstname(userObj.prenom);
+    if (userObj.hasOwnProperty('nom')) isValidLastname(userObj.nom);
+    if (userObj.hasOwnProperty('telephone')) {
+        isValidPhone(userObj.telephone);
+        if (await isExistUserPhone(userObj.telephone)) throw new Error('phone already exist'.red);
+    }
+    if (userObj.hasOwnProperty('password')) isValidPassword(userObj.password);
+
+    try {
+        const user = await findById(id);
+
+        if (userObj.hasOwnProperty('email')) user.email = userObj.email;
+        if (userObj.hasOwnProperty('prenom')) user.prenom = userObj.prenom;
+        if (userObj.hasOwnProperty('nom')) user.nom = userObj.nom;
+        if (userObj.hasOwnProperty('telephone')) user.telephone = userObj.telephone;
+        if (userObj.hasOwnProperty('password')) {
+            user.password = bcrypt.hashSync(userObj.password, 8);
+        }
+
+        await user.save();
+        console.log(`User with ID ${id} updated successfully`.green);
+    } catch(err) {
+        console.log(err.message);
+    }
+
+}
 
     /* Delete */
-// here
+const deleteUser = async (id) => {
+
+    isValidId(id);
+    await isExistUserTable();
+    await isExistUserId(id);
+
+    try {
+        db.user.destroy({
+            where: { id: id }
+        })
+        console.log(`User with ID ${id} removed successfully`.green);
+    } catch(err) {
+        console.log(err.message);
+    }
+}
 
 /* Additionnal Function */
 const formatPhoneNumber = (number) => {
@@ -193,15 +211,110 @@ const formatPhoneNumber = (number) => {
     return null;
 }
 
+const isExistUserFirstname = async (firstname) => {
+    if (await db.user.count({ where: {prenom: firstname} }) > 0 ) return true;
+    return false;
+}
+
+const isExistUserLastname = async (lastname) => {
+    if (await db.user.count({ where: {nom: lastname} }) > 0 ) return true;
+    return false;
+}
+
+const isExistUserId = async (id) => {
+    if (await db.user.count({ where: {id: id} }) === 0) throw new Error('user Id does not exist'.red);
+}
+
+const isExistUserPhone = async (phone) => {
+    if (await db.user.count({ where: {telephone: phone} }) > 0 ) return true;
+    return false;
+}
+
+const isExistUserEmail = async (email) => {
+    if (await db.user.count({ where: {email: email} }) > 0) return true;
+    return false;
+}
+
+const isExistUserTable = async () => {
+    const queryInterface = db.sequelize.getQueryInterface();
+    const tables = await queryInterface.showAllTables();
+
+    if(!tables.includes('users')) {
+        throw new Error('users table does not exist'.red);
+    }
+}
+
+const isValidId = (id) => {
+    if(id === null) throw new Error('id is null'.red);
+    if(typeof id !== "number") throw new Error('should be an integer'.red);
+}
+
+const isObj = (obj) => {
+    if (typeof obj !== "object" && obj !== null) throw new Error('should be an object'.red);
+}
+
+const isValidEmail = (email) => {
+    if(email === null) throw new Error('email is null'.red);
+    if(email.length > 50) throw new Error('email is more than 50 characters'.red);
+    if(email === "" || typeof email !== "string") throw new Error('should be a string not empty'.red);
+    if(!REGEXP_email.test(email)) throw new Error('invalid email'.red);
+}
+
+const isValidLastname = (lastname) => {
+    if(lastname === null) throw new Error('lastname is null'.red);
+    if(lastname.length > 50) throw new Error('lastname is more than 50 characters'.red);
+    if(lastname === "" || typeof lastname !== "string") throw new Error('should be a string not empty'.red);
+    if(!REGEXP_name.test(lastname)) throw new Error('invalid lastname'.red);
+};
+
+const isValidFirstname = (firstname) => {
+    if(firstname === null) throw new Error('firstname is null'.red);
+    if(firstname.length > 50) throw new Error('firstname is more than 50 characters'.red);
+    if(firstname === "" || typeof firstname !== "string") throw new Error('should be a string not empty'.red);
+    if(!REGEXP_name.test(firstname)) throw new Error('invalid firstname'.red);
+};
+
+const isValidPhone = (phone) => {
+    if(phone === null) throw new Error('phone is null'.red);
+    if(phone === "" || typeof phone !== "string") throw new Error('should be a string not empty'.red);
+    if(!REGEXP_phone.test(phone)) throw new Error('invalid phone'.red);
+};
+
+const isValidPassword = (password) => {
+    if(password === null) throw new Error('password is null'.red);
+    if(password === "" || typeof password !== "string") throw new Error('should be a string not empty'.red);
+    if(password.length > 50) throw new Error('password is more than 50 characters'.red);
+    if(password.length < 7) throw new Error('password is less than 7 characters'.red);
+    isContainsLowercase(password);
+    isContainsNumber(password);
+    isContainsSpecialCharacter(password);
+    isContainsUppercase(password);
+};
+
+const isContainsLowercase = (string) => {
+    if(!/[a-z]/.test(string)) throw new Error('should contains a lowercase'.red);
+}
+
+const isContainsUppercase = (string) => {
+    if(!/[A-Z]/.test(string)) throw new Error('should contains a uppercase'.red);
+}
+
+const isContainsNumber = (string) => {
+    if(!/[0-9]/.test(string)) throw new Error('should contains a number'.red);
+}
+
+const isContainsSpecialCharacter = (string) => {
+    if(!/[^a-zA-Z0-9]/.test(string)) throw new Error('should contains a special character'.red);
+}
+
 /* Exports */
 module.exports = {
     createUser,
     findById,
     findByEmail,
     findByPhone,
-    formatPhoneNumber,
-    dropUserTable,
-    cleanUser,
-    userSync,
-    createTableUser
+    findByLastname,
+    findByFirstname,
+    updateUser,
+    deleteUser
 }

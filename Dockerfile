@@ -8,6 +8,8 @@ RUN npm install -g nodemon
 RUN npm install dotenv --save
 RUN npm install -g mocha
 RUN npm install --save-dev chai
+RUN npm install --save-dev chai-as-promised
+RUN npm install colors #ONLY FOR DEBUGGING
 RUN npm install
 RUN npm ci
 RUN mkdir -p /dist/node_modules
@@ -17,4 +19,3 @@ ENV NODE_PATH /dist/node_modules
 COPY . /usr/src/app
 EXPOSE 4000
 
-CMD npm test ; npm start
