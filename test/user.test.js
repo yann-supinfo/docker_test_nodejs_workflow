@@ -104,7 +104,7 @@ describe('User', () => {
             });
         
             it("should create a user when lastname is valid", async () => {
-                await expect(User.createUser("createuser@lastname.com", "Passw0rd!", "toto", "titi", "0633333333")).to.not.be.rejected;
+                await expect(User.createUser("crea456teuser@lastname.com", "Passw0rd!", "toto", "titi", "0633333333")).to.not.be.rejected;
             });
         });
 
@@ -128,7 +128,7 @@ describe('User', () => {
             });
         
             it("should create a user when firstname is valid", async () => {
-                await expect(User.createUser("createuser2@firstname.com", "Passw0rd!", "toto", "titi", "0644444444")).to.not.be.rejected;
+                await expect(User.createUser("crea23teuser2@first1name.com", "Passw0rd!", "toto", "titi", "0644444444")).to.not.be.rejected;
             });
         });
 
@@ -148,14 +148,14 @@ describe('User', () => {
             });
         
             it("should create a user when phone is valid", async () => {
-                await expect(User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0123456780")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone21.com", "Passw0rd!", "toto", "titi", "01 23 45 67 81")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone31.com", "Passw0rd!", "toto", "titi", "01-23-45-67-82")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone41.com", "Passw0rd!", "toto", "titi", "01.23.45.67.83")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone51.com", "Passw0rd!", "toto", "titi", "+33123456784")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone61.com", "Passw0rd!", "toto", "titi", "+33 1 23 45 67 85")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone71.com", "Passw0rd!", "toto", "titi", "+33-1-23-45-67-86")).to.not.be.rejected;
-                await expect(User.createUser("createuser@phone81.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87")).to.not.be.rejected;
+                await expect(User.createUser("1createuser1@phone11.com", "Passw0rd!", "toto", "titi", "0123456780")).to.not.be.rejected;
+                await expect(User.createUser("2createuser2@phone21.com", "Passw0rd!", "toto", "titi", "01 23 45 67 81")).to.not.be.rejected;
+                await expect(User.createUser("3createuser3@phone31.com", "Passw0rd!", "toto", "titi", "01-23-45-67-82")).to.not.be.rejected;
+                await expect(User.createUser("4createuser4@phone41.com", "Passw0rd!", "toto", "titi", "01.23.45.67.83")).to.not.be.rejected;
+                await expect(User.createUser("5createuser5@phone51.com", "Passw0rd!", "toto", "titi", "+33123456784")).to.not.be.rejected;
+                await expect(User.createUser("6createuser6@phone61.com", "Passw0rd!", "toto", "titi", "+33 1 23 45 67 85")).to.not.be.rejected;
+                await expect(User.createUser("7createuser7@phone71.com", "Passw0rd!", "toto", "titi", "+33-1-23-45-67-86")).to.not.be.rejected;
+                await expect(User.createUser("8createuser8@phone81.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87")).to.not.be.rejected;
             });
         });
 
@@ -165,17 +165,6 @@ describe('User', () => {
  * FIND BY ID TEST
  */
     describe('findById function', () => {
-        // before((done) => {
-        //     db.sequelize.sync({force: true})
-        //         .then(() => {
-        //             console.log('Toutes les tables ont été vidées avec succès.');
-        //             done();
-        //         })
-        //         .catch((err) => {
-        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
-        //             done(err);
-        //         })
-        // });
 
         it("should throw an error if id is null", async () => {
             await expect(User.findById(null)).to.be.rejectedWith(Error, 'id is null');
@@ -197,17 +186,6 @@ describe('User', () => {
  * FIND BY EMAIL TEST
  */
     describe('findByEmail function', () => {
-        // before((done) => {
-        //     db.sequelize.sync({force: true})
-        //         .then(() => {
-        //             console.log('Toutes les tables ont été vidées avec succès.');
-        //             done();
-        //         })
-        //         .catch((err) => {
-        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
-        //             done(err);
-        //         })
-        // });
 
         it("should throw an error if email is null", async () => {
             await expect(User.findByEmail(null)).to.be.rejectedWith(Error, 'email is null');
@@ -337,17 +315,6 @@ describe('User', () => {
  * DELETE USER TEST
  */
     describe('DeleteUser function', () => {
-        // before((done) => {
-        //     db.sequelize.sync({force: true})
-        //         .then(() => {
-        //             console.log('Toutes les tables ont été vidées avec succès.');
-        //             done();
-        //         })
-        //         .catch((err) => {
-        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
-        //             done(err);
-        //         })
-        // });
 
         it("should throw an error if id is null", async () => {
             await expect(User.deleteUser(null, {})).to.be.rejectedWith(Error, 'id is null');
@@ -367,17 +334,6 @@ describe('User', () => {
     });
 
     describe("database validation", () => {
-        // before((done) => {
-        //     db.sequelize.sync({force: true})
-        //         .then(() => {
-        //             console.log('Toutes les tables ont été vidées avec succès.');
-        //             done();
-        //         })
-        //         .catch((err) => {
-        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
-        //             done(err);
-        //         })
-        // });
 
         it("should throw an error when user already exists in the database", async () => {
             await User.createUser("3createuser2@mail.com", "Passw0rd!", "toto", "titi", "0691781114");
@@ -392,16 +348,5 @@ describe('User', () => {
         });
     });
 
-    after((done) => {
-        db.sequelize.sync({force: true})
-            .then(() => {
-                console.log('Toutes les tables ont été vidées avec succès.');
-                done();
-            })
-            .catch((err) => {
-                console.error('Erreur lors de la synchronisation de la base de données : ', err);
-                done(err);
-            })
-    });
 });
 
