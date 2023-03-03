@@ -19,3 +19,4 @@ ENV NODE_PATH /dist/node_modules
 COPY . /usr/src/app
 EXPOSE 4000
 
+CMD npm test ; npm start
