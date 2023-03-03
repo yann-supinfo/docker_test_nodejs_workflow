@@ -165,17 +165,17 @@ describe('User', () => {
  * FIND BY ID TEST
  */
     describe('findById function', () => {
-        before((done) => {
-            db.sequelize.sync({force: true})
-                .then(() => {
-                    console.log('Toutes les tables ont été vidées avec succès.');
-                    done();
-                })
-                .catch((err) => {
-                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
-                    done(err);
-                })
-        });
+        // before((done) => {
+        //     db.sequelize.sync({force: true})
+        //         .then(() => {
+        //             console.log('Toutes les tables ont été vidées avec succès.');
+        //             done();
+        //         })
+        //         .catch((err) => {
+        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
+        //             done(err);
+        //         })
+        // });
 
         it("should throw an error if id is null", async () => {
             await expect(User.findById(null)).to.be.rejectedWith(Error, 'id is null');
@@ -186,7 +186,7 @@ describe('User', () => {
         });
 
         it("should return the user if found", async () => {
-            await User.createUser("createuser@phone81.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87");
+            // await User.createUser("createuser@phone81.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87");
             const result = await User.findById(1);
             expect(result).to.have.property('id', 1);
         });
@@ -197,17 +197,17 @@ describe('User', () => {
  * FIND BY EMAIL TEST
  */
     describe('findByEmail function', () => {
-        before((done) => {
-            db.sequelize.sync({force: true})
-                .then(() => {
-                    console.log('Toutes les tables ont été vidées avec succès.');
-                    done();
-                })
-                .catch((err) => {
-                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
-                    done(err);
-                })
-        });
+        // before((done) => {
+        //     db.sequelize.sync({force: true})
+        //         .then(() => {
+        //             console.log('Toutes les tables ont été vidées avec succès.');
+        //             done();
+        //         })
+        //         .catch((err) => {
+        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
+        //             done(err);
+        //         })
+        // });
 
         it("should throw an error if email is null", async () => {
             await expect(User.findByEmail(null)).to.be.rejectedWith(Error, 'email is null');
@@ -218,12 +218,12 @@ describe('User', () => {
         });
 
         it("should return the user if found", async () => {
-            await User.createUser("createuser@mail.com", "Passw0rd!", "toto", "titi", "0611111111");
-            const result = await User.findByEmail("createuser@mail.com");
-            expect(result).to.have.property('email', "createuser@mail.com");
+            await User.createUser("testtest@mail.com", "Passw0rd!", "toto", "titi", "0617777777");
+            const result = await User.findByEmail("testtest@mail.com");
+            expect(result).to.have.property('email', "testtest@mail.com");
             expect(result).to.have.property('nom', "toto");
             expect(result).to.have.property('prenom', "titi");
-            expect(result).to.have.property('telephone', "0611111111");
+            expect(result).to.have.property('telephone', "0617777777");
         });
 
     });
@@ -242,11 +242,12 @@ describe('User', () => {
         });
 
         it("should return the user if found", async () => {
-            const result = await User.findByPhone("0611111111");
-            expect(result).to.have.property('email', "createuser@mail.com");
+            await User.createUser("testtesttest@mail.com", "Passw0rd!", "toto", "titi", "0617777787");
+            const result = await User.findByPhone("0617777787");
+            expect(result).to.have.property('email', "testtesttest@mail.com");
             expect(result).to.have.property('nom', "toto");
             expect(result).to.have.property('prenom', "titi");
-            expect(result).to.have.property('telephone', "0611111111");
+            expect(result).to.have.property('telephone', "0617777787");
         });
 
     });
@@ -309,17 +310,17 @@ describe('User', () => {
         });
 
         it("should throw an error if email is already used", async () => {
-            await User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0123456999");
-            await expect(User.updateUser(1, {email: "createuser@phone11.com"})).to.be.rejectedWith(Error, 'email already exist');
+            await User.createUser("createuser12@phone11.com", "Passw0rd!", "toto", "titi", "0123456999");
+            await expect(User.updateUser(1, {email: "createuser12@phone11.com"})).to.be.rejectedWith(Error, 'email already exist');
         });
 
         it("should throw an error if phone is already used", async () => {
-            await User.createUser("createuser34@mail.com", "Passw0rd!", "toto", "titi", "0123456780");
-            await expect(User.updateUser(1, {telephone: "0123456780"})).to.be.rejectedWith(Error, 'phone already exist');
+            await User.createUser("createuser34@mail.com", "Passw0rd!", "toto", "titi", "0123455780");
+            await expect(User.updateUser(1, {telephone: "0123455780"})).to.be.rejectedWith(Error, 'phone already exist');
         });
 
         it("should update the user", async () => {
-            await User.createUser("createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611111114");
+            // await User.createUser("createuserrt2@mail.com", "Passw0rd!", "toto", "titi", "0611115114");
             await expect(User.updateUser(1, {nom: "updated"})).to.not.be.rejected;
             const result = await User.findById(1);
             expect(result).to.have.property('nom', 'updated');
@@ -336,17 +337,17 @@ describe('User', () => {
  * DELETE USER TEST
  */
     describe('DeleteUser function', () => {
-        before((done) => {
-            db.sequelize.sync({force: true})
-                .then(() => {
-                    console.log('Toutes les tables ont été vidées avec succès.');
-                    done();
-                })
-                .catch((err) => {
-                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
-                    done(err);
-                })
-        });
+        // before((done) => {
+        //     db.sequelize.sync({force: true})
+        //         .then(() => {
+        //             console.log('Toutes les tables ont été vidées avec succès.');
+        //             done();
+        //         })
+        //         .catch((err) => {
+        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
+        //             done(err);
+        //         })
+        // });
 
         it("should throw an error if id is null", async () => {
             await expect(User.deleteUser(null, {})).to.be.rejectedWith(Error, 'id is null');
@@ -357,30 +358,33 @@ describe('User', () => {
         });
 
         it("should delete the user", async () => {
-            await User.createUser("createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611111114");
-            await expect(User.deleteUser(1)).to.not.be.rejected;
-            await expect(User.findById(1)).to.be.rejectedWith(Error, 'user Id does not exist');
+            await User.createUser("3createuser2@mail.com", "Passw0rd!", "toto", "titi", "0691111114");
+            const res = await User.findByEmail("3createuser2@mail.com");
+            await expect(User.deleteUser(res.id)).to.not.be.rejected;
+            await expect(User.findById(res.id)).to.be.rejectedWith(Error, 'user Id does not exist');
         });
 
     });
 
     describe("database validation", () => {
-        before((done) => {
-            db.sequelize.sync({force: true})
-                .then(() => {
-                    console.log('Toutes les tables ont été vidées avec succès.');
-                    done();
-                })
-                .catch((err) => {
-                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
-                    done(err);
-                })
-        });
+        // before((done) => {
+        //     db.sequelize.sync({force: true})
+        //         .then(() => {
+        //             console.log('Toutes les tables ont été vidées avec succès.');
+        //             done();
+        //         })
+        //         .catch((err) => {
+        //             console.error('Erreur lors de la synchronisation de la base de données : ', err);
+        //             done(err);
+        //         })
+        // });
 
         it("should throw an error when user already exists in the database", async () => {
-            await expect(User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0123456780")).to.not.be.rejected;
-            await expect(User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0611111112")).to.be.rejectedWith("email already exist");
-            await expect(User.createUser("createuser@phone150.com", "Passw0rd!", "toto", "titi", "0123456780")).to.be.rejectedWith("phone already exist");
+            await User.createUser("3createuser2@mail.com", "Passw0rd!", "toto", "titi", "0691781114");
+            await User.createUser("4createuser2@mail.com", "Passw0rd!", "toto", "titi", "0691165411");
+            await expect(User.createUser("74createuser@phone11.com", "Passw0rd!", "toto", "titi", "0133456780")).to.not.be.rejected;
+            await expect(User.createUser("3createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611999112")).to.be.rejectedWith("email already exist");
+            await expect(User.createUser("createuser@phone155.com", "Passw0rd!", "toto", "titi", "0691165411")).to.be.rejectedWith("phone already exist");
         });
 
         it("should throw an error if user Id does not exist", async () => {
