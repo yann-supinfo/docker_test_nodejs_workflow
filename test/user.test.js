@@ -6,17 +6,18 @@ const User = require('../services/user.service')
 const db = require('../models');
 const bcrypt = require("bcryptjs");
 
-before(async () => {
-    try {
-        await db.sequelize.sync({force: true});
-        console.log('Base de données synchronisée avec succès.');
-    } catch(err) {
-        console.error('Erreur lors de la synchronisation de la base de données : ', err);
-    }
-});
+
 
 describe('User', () => {
 
+    before(async () => {
+        try {
+            await db.sequelize.sync({force: true});
+            console.log('Base de données synchronisée avec succès.');
+        } catch(err) {
+            console.error('Erreur lors de la synchronisation de la base de données : ', err);
+        }
+    });
 /**
  * CREATE USER TEST
  */
@@ -337,13 +338,13 @@ describe('User', () => {
         });
     });
 
+    after(async () => {
+        try {
+            await db.sequelize.sync({force: true});
+            console.log('Toutes les tables ont été vidées avec succès.');
+        } catch(err) {
+            console.error('Erreur lors de la synchronisation de la base de données : ', err);
+        }
+    });
 });
 
-after(async () => {
-    try {
-        await db.sequelize.sync({force: true});
-        console.log('Toutes les tables ont été vidées avec succès.');
-    } catch(err) {
-        console.error('Erreur lors de la synchronisation de la base de données : ', err);
-    }
-});
