@@ -8,8 +8,10 @@ RUN npm install -g nodemon
 RUN npm install dotenv --save
 RUN npm install -g mocha
 RUN npm install --save-dev chai
+RUN npm install --save-dev chai-as-promised
 RUN npm install
 RUN npm ci
+RUN npm install colors #ONLY FOR DEBUGGING
 RUN mkdir -p /dist/node_modules
 RUN cp -r node_modules/* /dist/node_modules/
 ENV NODE_PATH /dist/node_modules
