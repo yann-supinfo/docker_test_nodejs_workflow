@@ -10,15 +10,28 @@ const bcrypt = require("bcryptjs");
 
 describe('User', () => {
 
-    before(async () => {
-        try {
-            await db.sequelize.sync({force: true});
-            console.log('Base de données synchronisée avec succès.');
-            await new Promise(resolve => setTimeout(resolve, 2000));
-        } catch(err) {
-            console.error('Erreur lors de la synchronisation de la base de données : ', err);
-        }
+    // before(async () => {
+    //     try {
+    //         await db.sequelize.sync({force: true});
+    //         console.log('Base de données synchronisée avec succès.');
+    //         done();
+    //     } catch(err) {
+    //         console.error('Erreur lors de la synchronisation de la base de données : ', err);
+    //         done(err);
+    //     }
+    // });
+    before((done) => {
+        db.sequelize.sync({force: true})
+            .then(() => {
+                console.log('Base de données synchronisée avec succès.');
+                done();
+            })
+            .catch((err) => {
+                console.error('Erreur lors de la synchronisation de la base de données : ', err);
+                done(err);
+            })
     });
+
 /**
  * CREATE USER TEST
  */
@@ -333,13 +346,13 @@ describe('User', () => {
         });
     });
 
-    after(async () => {
-        try {
-            await db.sequelize.sync({force: true});
-            console.log('Toutes les tables ont été vidées avec succès.');
-        } catch(err) {
-            console.error('Erreur lors de la synchronisation de la base de données : ', err);
-        }
-    });
+    // after(async () => {
+    //     try {
+    //         await db.sequelize.sync({force: true});
+    //         console.log('Toutes les tables ont été vidées avec succès.');
+    //     } catch(err) {
+    //         console.error('Erreur lors de la synchronisation de la base de données : ', err);
+    //     }
+    // });
 });
 
