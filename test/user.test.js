@@ -10,16 +10,6 @@ const bcrypt = require("bcryptjs");
 
 describe('User', () => {
 
-    // before(async () => {
-    //     try {
-    //         await db.sequelize.sync({force: true});
-    //         console.log('Base de données synchronisée avec succès.');
-    //         done();
-    //     } catch(err) {
-    //         console.error('Erreur lors de la synchronisation de la base de données : ', err);
-    //         done(err);
-    //     }
-    // });
     before((done) => {
         db.sequelize.sync({force: true})
             .then(() => {
@@ -175,6 +165,17 @@ describe('User', () => {
  * FIND BY ID TEST
  */
     describe('findById function', () => {
+        before((done) => {
+            db.sequelize.sync({force: true})
+                .then(() => {
+                    console.log('Base de données synchronisée avec succès.');
+                    done();
+                })
+                .catch((err) => {
+                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
+                    done(err);
+                })
+        });
 
         it("should throw an error if id is null", async () => {
             await expect(User.findById(null)).to.be.rejectedWith(Error, 'id is null');
@@ -185,6 +186,7 @@ describe('User', () => {
         });
 
         it("should return the user if found", async () => {
+            await User.createUser("createuser@phone81.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87");
             const result = await User.findById(1);
             expect(result).to.have.property('id', 1);
         });
@@ -195,6 +197,17 @@ describe('User', () => {
  * FIND BY EMAIL TEST
  */
     describe('findByEmail function', () => {
+        before((done) => {
+            db.sequelize.sync({force: true})
+                .then(() => {
+                    console.log('Base de données synchronisée avec succès.');
+                    done();
+                })
+                .catch((err) => {
+                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
+                    done(err);
+                })
+        });
 
         it("should throw an error if email is null", async () => {
             await expect(User.findByEmail(null)).to.be.rejectedWith(Error, 'email is null');
@@ -205,6 +218,7 @@ describe('User', () => {
         });
 
         it("should return the user if found", async () => {
+            await User.createUser("createuser@mail.com", "Passw0rd!", "toto", "titi", "0611111111");
             const result = await User.findByEmail("createuser@mail.com");
             expect(result).to.have.property('email', "createuser@mail.com");
             expect(result).to.have.property('nom', "toto");
@@ -295,14 +309,17 @@ describe('User', () => {
         });
 
         it("should throw an error if email is already used", async () => {
+            await User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0123456999");
             await expect(User.updateUser(1, {email: "createuser@phone11.com"})).to.be.rejectedWith(Error, 'email already exist');
         });
 
         it("should throw an error if phone is already used", async () => {
+            await User.createUser("createuser34@mail.com", "Passw0rd!", "toto", "titi", "0123456780");
             await expect(User.updateUser(1, {telephone: "0123456780"})).to.be.rejectedWith(Error, 'phone already exist');
         });
 
         it("should update the user", async () => {
+            await User.createUser("createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611111114");
             await expect(User.updateUser(1, {nom: "updated"})).to.not.be.rejected;
             const result = await User.findById(1);
             expect(result).to.have.property('nom', 'updated');
@@ -319,6 +336,17 @@ describe('User', () => {
  * DELETE USER TEST
  */
     describe('DeleteUser function', () => {
+        before((done) => {
+            db.sequelize.sync({force: true})
+                .then(() => {
+                    console.log('Base de données synchronisée avec succès.');
+                    done();
+                })
+                .catch((err) => {
+                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
+                    done(err);
+                })
+        });
 
         it("should throw an error if id is null", async () => {
             await expect(User.deleteUser(null, {})).to.be.rejectedWith(Error, 'id is null');
@@ -329,6 +357,7 @@ describe('User', () => {
         });
 
         it("should delete the user", async () => {
+            await User.createUser("createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611111114");
             await expect(User.deleteUser(1)).to.not.be.rejected;
             await expect(User.findById(1)).to.be.rejectedWith(Error, 'user Id does not exist');
         });
@@ -336,7 +365,20 @@ describe('User', () => {
     });
 
     describe("database validation", () => {
+        before((done) => {
+            db.sequelize.sync({force: true})
+                .then(() => {
+                    console.log('Base de données synchronisée avec succès.');
+                    done();
+                })
+                .catch((err) => {
+                    console.error('Erreur lors de la synchronisation de la base de données : ', err);
+                    done(err);
+                })
+        });
+
         it("should throw an error when user already exists in the database", async () => {
+            await expect(User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0123456780")).to.not.be.rejected;
             await expect(User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0611111112")).to.be.rejectedWith("email already exist");
             await expect(User.createUser("createuser@phone150.com", "Passw0rd!", "toto", "titi", "0123456780")).to.be.rejectedWith("phone already exist");
         });
@@ -346,13 +388,16 @@ describe('User', () => {
         });
     });
 
-    // after(async () => {
-    //     try {
-    //         await db.sequelize.sync({force: true});
-    //         console.log('Toutes les tables ont été vidées avec succès.');
-    //     } catch(err) {
-    //         console.error('Erreur lors de la synchronisation de la base de données : ', err);
-    //     }
-    // });
+    after((done) => {
+        db.sequelize.sync({force: true})
+            .then(() => {
+                console.log('Toutes les tables ont été vidées avec succès.');
+                done();
+            })
+            .catch((err) => {
+                console.error('Erreur lors de la synchronisation de la base de données : ', err);
+                done(err);
+            })
+    });
 });
 
