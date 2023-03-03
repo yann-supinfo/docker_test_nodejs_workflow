@@ -168,7 +168,7 @@ describe('User', () => {
         before((done) => {
             db.sequelize.sync({force: true})
                 .then(() => {
-                    console.log('Base de données synchronisée avec succès.');
+                    console.log('Toutes les tables ont été vidées avec succès.');
                     done();
                 })
                 .catch((err) => {
@@ -200,7 +200,7 @@ describe('User', () => {
         before((done) => {
             db.sequelize.sync({force: true})
                 .then(() => {
-                    console.log('Base de données synchronisée avec succès.');
+                    console.log('Toutes les tables ont été vidées avec succès.');
                     done();
                 })
                 .catch((err) => {
@@ -339,7 +339,7 @@ describe('User', () => {
         before((done) => {
             db.sequelize.sync({force: true})
                 .then(() => {
-                    console.log('Base de données synchronisée avec succès.');
+                    console.log('Toutes les tables ont été vidées avec succès.');
                     done();
                 })
                 .catch((err) => {
@@ -368,7 +368,7 @@ describe('User', () => {
         before((done) => {
             db.sequelize.sync({force: true})
                 .then(() => {
-                    console.log('Base de données synchronisée avec succès.');
+                    console.log('Toutes les tables ont été vidées avec succès.');
                     done();
                 })
                 .catch((err) => {
