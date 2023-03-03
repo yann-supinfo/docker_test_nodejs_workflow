@@ -54,6 +54,10 @@ describe('User', () => {
             it("should throw an error when pwd is more than 50 characters", async () => {
                 await expect(User.createUser("test@test.com", "A".repeat(51), "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "password is more than 50 characters");
             });
+
+            it("should throw an error when pwd is less than 7 characters", async () => {
+                await expect(User.createUser("test@test.com", "A", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "password is less than 7 characters");
+            });
             
             it("should throw an error when pwd is empty or not a string", async () => {
                 await expect(User.createUser("test@test.com", "", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
@@ -62,7 +66,10 @@ describe('User', () => {
             });
 
             it("should throw an error when pwd is not valid", async () => {
-                await expect(User.createUser("test@test.com", "password", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "invalid password");
+                await expect(User.createUser("test@test.com", "PASSWORD1!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a lowercase");
+                await expect(User.createUser("test@test.com", "password1!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a uppercase");
+                await expect(User.createUser("test@test.com", "Password!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a number");
+                await expect(User.createUser("test@test.com", "Password1", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a special character");
             });
         
             it("should create a user when pwd is valid", async () => {
@@ -173,169 +180,170 @@ describe('User', () => {
 
     });
 
+/**
+ * FIND BY EMAIL TEST
+ */
+    describe('findByEmail function', () => {
 
+        it("should throw an error if email is null", async () => {
+            await expect(User.findByEmail(null)).to.be.rejectedWith(Error, 'email is null');
+        });
 
+        it("should throw an error if email is not a string", async () => {
+            await expect(User.findByEmail(123)).to.be.rejectedWith(Error, 'should be a string');
+        });
 
-    // describe("database validation", () => {
-    //     it("should throw an error when user already exists in the database", () => {
-    //         await expect(User.createUser("createuser@mail.com", "Passw0rd!", "toto", "titi", "0611111112")).to.be.rejectedWith("user already exist");
-    //         await expect(User.createUser("createuser@mail2.com", "Passw0rd!", "toto", "titi", "0611111111")).to.be.rejectedWith("user already exist");
-    //     });
+        it("should return the user if found", async () => {
+            const result = await User.findByEmail("createuser@mail.com");
+            expect(result).to.have.property('id', 1);
+            expect(result).to.have.property('email', "createuser@mail.com");
+            expect(result).to.have.property('nom', "toto");
+            expect(result).to.have.property('prenom', "titi");
+            expect(result).to.have.property('telephone', "0611111111");
+        });
 
-    //     it("should throw an error if user Id does not exist", async () => {
-    //         await expect(User.findById(100)).to.be.rejectedWith(Error, 'user Id does not exist');
-    //     });
-    // });
+    });
+
+/**
+ * FIND BY PHONE TEST
+ */
+    describe('findByPhone function', () => {
+
+        it("should throw an error if phone is null", async () => {
+            await expect(User.findByPhone(null)).to.be.rejectedWith(Error, 'phone is null');
+        });
+
+        it("should throw an error if phone is not a string", async () => {
+            await expect(User.findByPhone(0611111111)).to.be.rejectedWith(Error, 'should be a string');
+        });
+
+        it("should return the user if found", async () => {
+            const result = await User.findByPhone("0611111111");
+            expect(result).to.have.property('id', 1);
+            expect(result).to.have.property('email', "createuser@mail.com");
+            expect(result).to.have.property('nom', "toto");
+            expect(result).to.have.property('prenom', "titi");
+            expect(result).to.have.property('telephone', "0611111111");
+        });
+
+    });
+
+/**
+ * FIND BY LASTNAME TEST
+ */
+    describe('findByLastname function', () => {
+
+        it("should throw an error if lastname is null", async () => {
+            await expect(User.findByLastname(null)).to.be.rejectedWith(Error, 'lastname is null');
+        });
+
+        it("should throw an error if lastname is not a string", async () => {
+            await expect(User.findByLastname(123)).to.be.rejectedWith(Error, 'should be a string');
+        });
+
+        it("should return the user if found", async () => {
+            const resultList = await User.findByLastname("toto");
+            expect(resultList).to.exist;
+            expect(resultList).to.be.an('array');
+            expect(resultList.every(user => user.nom === "toto")).to.be.true;
+        });
+
+    });
+
+/**
+ * FIND BY FIRSTNAME TEST
+ */
+    describe('findByFirstname function', () => {
+
+        it("should throw an error if firstname is null", async () => {
+            await expect(User.findByFirstname(null)).to.be.rejectedWith(Error, 'firstname is null');
+        });
+
+        it("should throw an error if firstname is not a string", async () => {
+            await expect(User.findByFirstname(123)).to.be.rejectedWith(Error, 'should be a string');
+        });
+
+        it("should return the user if found", async () => {
+            const resultList = await User.findByFirstname("titi");
+            expect(resultList).to.exist;
+            expect(resultList).to.be.an('array');
+            expect(resultList.every(user => user.prenom === "titi")).to.be.true;
+        });
+
+    });
+
+/**
+ * UPDATE USER TEST
+ */
+    describe('UpdateUser function', () => {
+
+        it("should throw an error if id is null", async () => {
+            await expect(User.updateUser(null, {})).to.be.rejectedWith(Error, 'id is null');
+        });
+
+        it("should throw an error if id is not an integer", async () => {
+            await expect(User.updateUser("1", {})).to.be.rejectedWith(Error, 'should be an integer');
+        });
+
+        it("should throw an error if email is already used", async () => {
+            await expect(User.updateUser(1, {email: "createuser@phone1.com"})).to.be.rejectedWith(Error, 'email already exist');
+        });
+
+        it("should throw an error if phone is already used", async () => {
+            await expect(User.updateUser(1, {telephone: "0123456780"})).to.be.rejectedWith(Error, 'phone already exist');
+        });
+
+        it("should update the user", async () => {
+            await expect(User.updateUser(1, {nom: "updated"})).to.not.be.rejected;
+            const result = await User.findById(1);
+            expect(result).to.have.property('nom', 'updated');
+
+            await expect(User.updateUser(2, {nom: "updated", prenom: "test"})).to.not.be.rejected;
+            const result2 = await User.findById(2);
+            expect(result2).to.have.property('nom', 'updated');
+            expect(result2).to.have.property('prenom', 'test');
+        });
+
+    });
+
+/**
+ * DELETE USER TEST
+ */
+    describe('DeleteUser function', () => {
+
+        it("should throw an error if id is null", async () => {
+            await expect(User.deleteUser(null, {})).to.be.rejectedWith(Error, 'id is null');
+        });
+
+        it("should throw an error if id is not an integer", async () => {
+            await expect(User.deleteUser("1", {})).to.be.rejectedWith(Error, 'should be an integer');
+        });
+
+        it("should delete the user", async () => {
+            await expect(User.deleteUser(1)).to.not.be.rejected;
+            await expect(User.findById(1)).to.be.rejectedWith(Error, 'user Id does not exist');
+        });
+
+    });
+
+    describe("database validation", () => {
+        it("should throw an error when user already exists in the database", async () => {
+            await expect(User.createUser("createuser@phone1.com", "Passw0rd!", "toto", "titi", "0611111112")).to.be.rejectedWith("email already exist");
+            await expect(User.createUser("createuser@phone150.com", "Passw0rd!", "toto", "titi", "0123456780")).to.be.rejectedWith("phone already exist");
+        });
+
+        it("should throw an error if user Id does not exist", async () => {
+            await expect(User.findById(100)).to.be.rejectedWith(Error, 'user Id does not exist');
+        });
+    });
 
 });
 
-//     describe('findByEmail function', () => {
-
-//         describe('Read Database User', () => {
-
-//             before(async () => {
-//                 // await db.sequelize.sync({force: true});
-//                 // await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-//                 // await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
-//             });
-
-//             it('should get the right user', async () => {
-//                 const userSelected = await User.findByEmail("tototiti@email.com");
-//                 expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
-//                 expect(userSelected.nom).to.equal("toto");
-//                 expect(userSelected.prenom).to.equal("titi");
-//                 expect(userSelected.telephone).to.equal("0123456781");
-//             });
-
-//             it('throw error email does not exist', async () => {
-//                 try {
-//                     await User.findByEmail("failtototiti@email.com");
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'User email does not exist');
-//                 }
-//                 try {
-//                     await User.findByEmail("");
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'User email does not exist');
-//                 }
-//             });
-
-//         });
-
-//         // describe('Table User', () => {
-//         //     before(async () => {
-//         //         await db.sequelize.drop();
-//         //     });
-
-//         //     it('throw error table user does not exist', async () => {
-//         //         try {
-//         //             await User.findByEmail("tototiti@email.com");
-//         //         } catch (error) {
-//         //             assert.strictEqual(error.message, 'users table does not exist');
-//         //         }
-//         //     });
-
-//         //     after(async () => {
-//         //         await db.sequelize.sync({force: true});
-//         //     });
-//         // });
-
-//         describe('User Email', () => {
-
-//             it('throw error email is not string', async () => {
-//                 try {
-//                     await User.findByEmail(2);
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'should be a string');
-//                 }
-//             });
-
-//             it('throw error Email is null', async () => {
-//                 try {
-//                     await User.findByEmail(null);
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'email is null');
-//                 }
-//             });
-//         });
-
-//     });
-
-//     describe('findByPhone function', () => {
-
-//         describe('Read Database User', () => {
-
-//             before(async () => {
-//                 // await db.sequelize.sync({force: true});
-//                 // await User.createUser("toto@email.com", "Passw0rd!", "toto", "titi", "0123456789");
-//                 // await User.createUser("tototiti@email.com", "Passw0rd!", "toto", "titi", "0123456781");
-//             });
-
-//             it('should get the right user', async () => {
-//                 const userSelected = await User.findByPhone("0123456781");
-//                 expect(userSelected.email).to.equal("tototiti@email.com");
-//                 expect(true).to.equal(bcrypt.compareSync("Passw0rd!", userSelected.password));
-//                 expect(userSelected.nom).to.equal("toto");
-//                 expect(userSelected.prenom).to.equal("titi");
-//             });
-
-//             it('throw error phone does not exist', async () => {
-//                 try {
-//                     await User.findByPhone("1111111111");
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'User phone does not exist');
-//                 }
-//                 try {
-//                     await User.findByPhone("");
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'User phone does not exist');
-//                 }
-//             });
-
-//         });
-
-//         // describe('Table User', () => {
-//         //     before(async () => {
-//         //         await db.sequelize.drop();
-//         //     });
-
-//         //     it('throw error table user does not exist', async () => {
-//         //         try {
-//         //             await User.findByPhone("0123456781");
-//         //         } catch (error) {
-//         //             assert.strictEqual(error.message, 'users table does not exist');
-//         //         }
-//         //     });
-
-//         //     after(async () => {
-//         //         await db.sequelize.sync({force: true});
-//         //     });
-//         // });
-
-//         describe('User Phone', () => {
-
-//             it('throw error phone is not string', async () => {
-//                 try {
-//                     await User.findByPhone(0101010101);
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'should be a string');
-//                 }
-//             });
-
-//             it('throw error phone is null', async () => {
-//                 try {
-//                     await User.findByPhone(null);
-//                 } catch (error) {
-//                     assert.strictEqual(error.message, 'phone is null');
-//                 }
-//             });
-//         });
-
-//     });
-    
-
-// });
-
 after(async () => {
-    // empty table user
+    try {
+        await db.sequelize.sync({force: true});
+        console.log('Toutes les tables ont été vidées avec succès.');
+    } catch(err) {
+        console.error('Erreur lors de la synchronisation de la base de données : ', error);
+    }
 });
