@@ -2,6 +2,9 @@ const db = require('../models');
 const { Sequelize } = require('sequelize');
 const bcrypt = require("bcryptjs");
 
+// for debugging only
+const colors = require('colors');
+
 const REGEXP_email = /^\S+@\S+\.\S+$/;
 const REGEXP_name = /^[a-zA-Z]+$/;
 const REGEXP_phone = /^(0|\+33)[-. ]?[1-9]{1}([-. ]?[0-9]{2}){4}$/;
@@ -32,6 +35,7 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
     if(!REGEXP_phone.test(phone)) throw new Error('invalid phone');
 
     if(pwd === null) throw new Error('password is null');
+    if(pwd === "" || typeof pwd !== "string") throw new Error('should be a string not empty');
     if(pwd.length > 50) throw new Error('password is more than 50 characters');
     if(!REGEXP_password.test(pwd)) throw new Error('invalid password. It should contain at least : \n- 1 uppercase\n- 1 lowercase\n- 1 special character\n- 1 number\n- 7 characters');
 
@@ -43,10 +47,10 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('users table does not exist'.red);
         }
 
-        if(await db.user.findOne({ where: {email: mail} }) !== null || await db.user.findOne({ where: {telephone: phone} }) !== null) throw new Error('user already exist');
+        if ( await db.user.count({ where: {email: mail} }) > 0 || await db.user.count({ where: {telephone: phone} }) > 0 ) throw new Error('user already exist'.red);
 
         const User = await db.user.create({
             email: mail,
@@ -55,9 +59,9 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
             prenom: firstname,
             telephone: phone, 
         });
-        console.log(`User ${User.nom} ${User.prenom} has been successfully added`);
+        console.log(`User ${User.nom} ${User.prenom} has been successfully added`.green);
     } catch (err) {
-
+        console.log(err.message);
     }
 
 }
@@ -75,18 +79,18 @@ const findById = async (id) => {
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('users table does not exist'.red);
         }
 
         const userSelected = await db.user.findByPk(id);
         
-        if (!userSelected) throw new Error('User Id does not exist');
+        if (!userSelected) throw new Error('user Id does not exist'.red);
 
-        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-
+        console.log(err.message);
     }
 }
         /* By Email */
@@ -101,18 +105,18 @@ const findByEmail = async (mail) => {
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('user table does not exist'.red);
         }
 
         const userSelected = await db.user.findOne({where: {email: mail} });
         
-        if (!userSelected) throw new Error('User email does not exist');
+        if (!userSelected) throw new Error('User email does not exist'.red);
 
-        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-
+        console.log(err.message);
     }
 }
         /* By Phone number */
@@ -129,18 +133,18 @@ const findByPhone = async (phone) => {
         const tables = await queryInterface.showAllTables();
 
         if(!tables.includes('users')) {
-            throw new Error('user table does not exist');
+            throw new Error('user table does not exist'.red);
         }
 
         const userSelected = await db.user.findOne({where: {telephone: phone} });
         
-        if (!userSelected) throw new Error('User phone does not exist');
+        if (!userSelected) throw new Error('User phone does not exist'.red);
 
-        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`);
+        console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-
+        console.log(err.message);
     }
 }
 
