@@ -11,7 +11,7 @@ before(async () => {
         await db.sequelize.sync({force: true});
         console.log('Base de données synchronisée avec succès.');
     } catch(err) {
-        console.error('Erreur lors de la synchronisation de la base de données : ', error);
+        console.error('Erreur lors de la synchronisation de la base de données : ', err);
     }
 });
 
@@ -344,6 +344,6 @@ after(async () => {
         await db.sequelize.sync({force: true});
         console.log('Toutes les tables ont été vidées avec succès.');
     } catch(err) {
-        console.error('Erreur lors de la synchronisation de la base de données : ', error);
+        console.error('Erreur lors de la synchronisation de la base de données : ', err);
     }
 });
