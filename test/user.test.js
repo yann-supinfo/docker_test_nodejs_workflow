@@ -14,6 +14,7 @@ describe('User', () => {
         try {
             await db.sequelize.sync({force: true});
             console.log('Base de données synchronisée avec succès.');
+            await new Promise(resolve => setTimeout(resolve, 2000));
         } catch(err) {
             console.error('Erreur lors de la synchronisation de la base de données : ', err);
         }
