@@ -349,7 +349,7 @@ describe('User', () => {
         it("should delete the user", async () => {
             const user = await User.createUser("createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611111114");
             await expect(User.deleteUser(user.id)).to.not.be.rejected;
-            await expect(User.findById(user.id)).to.be.rejectedWith(Error, 'user Id does not exist');
+            return await expect(User.findById(user.id)).to.be.rejectedWith(Error, 'user Id does not exist');
         });
 
     });
