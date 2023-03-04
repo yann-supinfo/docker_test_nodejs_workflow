@@ -1,3 +1,5 @@
+const db = require("../models");
+
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
   };
@@ -13,3 +15,10 @@ exports.allAccess = (req, res) => {
   exports.moderatorBoard = (req, res) => {
     res.status(200).send("Moderator Content.");
   };
+
+
+exports.findById = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const user = await db.user.findByPk(id,  {attributes: ['nom', 'email', 'prenom', 'telephone', 'username']});
+    res.json(user);
+}
