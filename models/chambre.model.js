@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+/*module.exports = (sequelize, Sequelize) => {
 const Chambre = sequelize.define('chambre', {
   numero: Sequelize.INTEGER,
   type: Sequelize.STRING,
@@ -6,4 +6,4 @@ const Chambre = sequelize.define('chambre', {
 });
 
 return Chambre;
-};
+};*/
