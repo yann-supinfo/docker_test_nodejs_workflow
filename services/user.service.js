@@ -239,6 +239,7 @@ const isExistUserTable = async () => {
     if(!tables.includes('users')) {
         throw new Error('users table does not exist'.red);
     }
+    return true;
 }
 
 const isValidId = (id) => {
