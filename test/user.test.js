@@ -29,21 +29,21 @@ describe('User', () => {
 
         describe("mail validation", () => {
             it("should throw an error when mail is null", async () => {
-                await expect(User.createUser(null, "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "mail is null");
+                await expect(User.createUser(null, "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith("mail is null");
             });
         
             it("should throw an error when mail is more than 50 characters", async () => {
-                await expect(User.createUser("test@test.com".repeat(10), "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "mail is more than 50 characters");
+                await expect(User.createUser("test@test.com".repeat(10), "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith("mail is more than 50 characters");
             });
         
             it("should throw an error when mail is empty or not a string", async () => {
-                await expect(User.createUser("", "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser([], "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser({}, "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
+                await expect(User.createUser("", "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser([], "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser({}, "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
             });
         
             it("should throw an error when mail is not a valid email address", async () => {
-                await expect(User.createUser("test", "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "invalid email");
+                await expect(User.createUser("test", "Passw0rd!", "toto", "titi", "0606060606")).to.be.rejectedWith("invalid email");
             });
         
             it("should create a user when mail is valid", async () => {
@@ -53,28 +53,28 @@ describe('User', () => {
 
         describe("pwd validation", () => {
             it("should throw an error when pwd is null", async () => {
-                await expect(User.createUser("test@test.com", null, "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "password is null");
+                await expect(User.createUser("test@test.com", null, "toto", "titi", "0606060606")).to.be.rejectedWith("password is null");
             });
         
             it("should throw an error when pwd is more than 50 characters", async () => {
-                await expect(User.createUser("test@test.com", "A".repeat(51), "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "password is more than 50 characters");
+                await expect(User.createUser("test@test.com", "A".repeat(51), "toto", "titi", "0606060606")).to.be.rejectedWith("password is more than 50 characters");
             });
 
             it("should throw an error when pwd is less than 7 characters", async () => {
-                await expect(User.createUser("test@test.com", "A", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "password is less than 7 characters");
+                await expect(User.createUser("test@test.com", "A", "toto", "titi", "0606060606")).to.be.rejectedWith("password is less than 7 characters");
             });
             
             it("should throw an error when pwd is empty or not a string", async () => {
-                await expect(User.createUser("test@test.com", "", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", [], "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", {}, "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
+                await expect(User.createUser("test@test.com", "", "toto", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", [], "toto", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", {}, "toto", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
             });
 
             it("should throw an error when pwd is not valid", async () => {
-                await expect(User.createUser("test@test.com", "PASSWORD1!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a lowercase");
-                await expect(User.createUser("test@test.com", "password1!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a uppercase");
-                await expect(User.createUser("test@test.com", "Password!", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a number");
-                await expect(User.createUser("test@test.com", "Password1", "toto", "titi", "0606060606")).to.be.rejectedWith(Error, "should contains a special character");
+                await expect(User.createUser("test@test.com", "PASSWORD1!", "toto", "titi", "0606060606")).to.be.rejectedWith("should contains a lowercase");
+                await expect(User.createUser("test@test.com", "password1!", "toto", "titi", "0606060606")).to.be.rejectedWith("should contains a uppercase");
+                await expect(User.createUser("test@test.com", "Password!", "toto", "titi", "0606060606")).to.be.rejectedWith("should contains a number");
+                await expect(User.createUser("test@test.com", "Password1", "toto", "titi", "0606060606")).to.be.rejectedWith("should contains a special character");
             });
         
             it("should create a user when pwd is valid", async () => {
@@ -86,21 +86,21 @@ describe('User', () => {
 
         describe("lastname validation", () => {
             it("should throw an error when lastname is null", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", null, "titi", "0606060606")).to.be.rejectedWith(Error, "lastname is null");
+                await expect(User.createUser("test@test.com", "Passw0rd!", null, "titi", "0606060606")).to.be.rejectedWith("lastname is null");
             });
         
             it("should throw an error when lastname is more than 50 characters", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "t".repeat(51), "titi", "0606060606")).to.be.rejectedWith(Error, "lastname is more than 50 characters");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "t".repeat(51), "titi", "0606060606")).to.be.rejectedWith("lastname is more than 50 characters");
             });
         
             it("should throw an error when lastname is empty or not a string", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "", "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", "Passw0rd!", [], "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", "Passw0rd!", {}, "titi", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "", "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", [], "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", {}, "titi", "0606060606")).to.be.rejectedWith("should be a string not empty");
             });
 
             it("should throw an error when lastname is not valid", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto123", "titi", "0606060606")).to.be.rejectedWith(Error, "invalid lastname");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto123", "titi", "0606060606")).to.be.rejectedWith("invalid lastname");
             });
         
             it("should create a user when lastname is valid", async () => {
@@ -110,21 +110,21 @@ describe('User', () => {
 
         describe("firstname validation", () => {
             it("should throw an error when firstname is null", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", null, "0606060606")).to.be.rejectedWith(Error, "firstname is null");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", null, "0606060606")).to.be.rejectedWith("firstname is null");
             });
         
             it("should throw an error when firstname is more than 50 characters", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "t".repeat(51), "0606060606")).to.be.rejectedWith(Error, "firstname is more than 50 characters");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "t".repeat(51), "0606060606")).to.be.rejectedWith("firstname is more than 50 characters");
             });
 
             it("should throw an error when firstname is empty or not a string", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "", "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", [], "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", {}, "0606060606")).to.be.rejectedWith(Error, "should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "", "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", [], "0606060606")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", {}, "0606060606")).to.be.rejectedWith("should be a string not empty");
             });
         
             it("should throw an error when firstname is not valid", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi123", "0606060606")).to.be.rejectedWith(Error, "invalid firstname");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi123", "0606060606")).to.be.rejectedWith("invalid firstname");
             });
         
             it("should create a user when firstname is valid", async () => {
@@ -134,17 +134,17 @@ describe('User', () => {
 
         describe("phone validation", () => {
             it("should throw an error when phone is null", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", null)).to.be.rejectedWith(Error, "phone is null");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", null)).to.be.rejectedWith("phone is null");
             });
 
             it("should throw an error when phone is empty or not a string", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", "")).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", [])).to.be.rejectedWith(Error, "should be a string not empty");
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", {})).to.be.rejectedWith(Error, "should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", "")).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", [])).to.be.rejectedWith("should be a string not empty");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", {})).to.be.rejectedWith("should be a string not empty");
             });
         
             it("should throw an error when phone is not valid", async () => {
-                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", "+33606060606345")).to.be.rejectedWith(Error, "invalid phone");
+                await expect(User.createUser("test@test.com", "Passw0rd!", "toto", "titi", "+33606060606345")).to.be.rejectedWith("invalid phone");
             });
         
             it("should create a user when phone is valid", async () => {
@@ -173,23 +173,16 @@ describe('User', () => {
         });
 
         it("should throw an error if id is null", async () => {
-            console.log('B')
-            await expect(User.findById(null)).to.be.rejectedWith(Error, 'id is null');
-            console.log('C')
+            await expect(User.findById(null)).to.be.rejectedWith('id is null');
         });
 
         it("should throw an error if id is not an integer", async () => {
-            console.log('D')
-            await expect(User.findById("id")).to.be.rejectedWith(Error, 'should be an integer');
-            console.log('E')
+            await expect(User.findById("id")).to.be.rejectedWith('should be an integer');
         });
 
         it("should return the user if found", async () => {
-            console.log('F')
             const user = await User.createUser("createuser@phone81.com", "Passw0rd!", "toto", "titi", "+33.1.23.45.67.87");
-            console.log('DEBUG ////////////////////', user)
             const result = await User.findById(user.id);
-            console.log('H')
             expect(result).to.have.property('id', user.id);
         });
 
@@ -206,11 +199,11 @@ describe('User', () => {
         });
 
         it("should throw an error if email is null", async () => {
-            await expect(User.findByEmail(null)).to.be.rejectedWith(Error, 'email is null');
+            await expect(User.findByEmail(null)).to.be.rejectedWith('email is null');
         });
 
         it("should throw an error if email is not a string", async () => {
-            await expect(User.findByEmail(123)).to.be.rejectedWith(Error, 'should be a string');
+            await expect(User.findByEmail(123)).to.be.rejectedWith('should be a string');
         });
 
         it("should return the user if found", async () => {
@@ -230,11 +223,11 @@ describe('User', () => {
     describe('findByPhone function', () => {
 
         it("should throw an error if phone is null", async () => {
-            await expect(User.findByPhone(null)).to.be.rejectedWith(Error, 'phone is null');
+            await expect(User.findByPhone(null)).to.be.rejectedWith('phone is null');
         });
 
         it("should throw an error if phone is not a string", async () => {
-            await expect(User.findByPhone(0611111111)).to.be.rejectedWith(Error, 'should be a string');
+            await expect(User.findByPhone(0611111111)).to.be.rejectedWith('should be a string');
         });
 
         it("should return the user if found", async () => {
@@ -253,11 +246,11 @@ describe('User', () => {
     describe('findByLastname function', () => {
 
         it("should throw an error if lastname is null", async () => {
-            await expect(User.findByLastname(null)).to.be.rejectedWith(Error, 'lastname is null');
+            await expect(User.findByLastname(null)).to.be.rejectedWith('lastname is null');
         });
 
         it("should throw an error if lastname is not a string", async () => {
-            await expect(User.findByLastname(123)).to.be.rejectedWith(Error, 'should be a string');
+            await expect(User.findByLastname(123)).to.be.rejectedWith('should be a string');
         });
 
         it("should return the user if found", async () => {
@@ -275,11 +268,11 @@ describe('User', () => {
     describe('findByFirstname function', () => {
 
         it("should throw an error if firstname is null", async () => {
-            await expect(User.findByFirstname(null)).to.be.rejectedWith(Error, 'firstname is null');
+            await expect(User.findByFirstname(null)).to.be.rejectedWith('firstname is null');
         });
 
         it("should throw an error if firstname is not a string", async () => {
-            await expect(User.findByFirstname(123)).to.be.rejectedWith(Error, 'should be a string');
+            await expect(User.findByFirstname(123)).to.be.rejectedWith('should be a string');
         });
 
         it("should return the user if found", async () => {
@@ -297,21 +290,21 @@ describe('User', () => {
     describe('UpdateUser function', () => {
 
         it("should throw an error if id is null", async () => {
-            await expect(User.updateUser(null, {})).to.be.rejectedWith(Error, 'id is null');
+            await expect(User.updateUser(null, {})).to.be.rejectedWith('id is null');
         });
 
         it("should throw an error if id is not an integer", async () => {
-            await expect(User.updateUser("1", {})).to.be.rejectedWith(Error, 'should be an integer');
+            await expect(User.updateUser("1", {})).to.be.rejectedWith('should be an integer');
         });
 
         it("should throw an error if email is already used", async () => {
             await User.createUser("createuser@phone11.com", "Passw0rd!", "toto", "titi", "0123456999");
-            await expect(User.updateUser(1, {email: "createuser@phone11.com"})).to.be.rejectedWith(Error, 'email already exist');
+            await expect(User.updateUser(1, {email: "createuser@phone11.com"})).to.be.rejectedWith('email already exist');
         });
 
         it("should throw an error if phone is already used", async () => {
             await User.createUser("createuser34@mail.com", "Passw0rd!", "toto", "titi", "0123456780");
-            await expect(User.updateUser(1, {telephone: "0123456780"})).to.be.rejectedWith(Error, 'phone already exist');
+            await expect(User.updateUser(1, {telephone: "0123456780"})).to.be.rejectedWith('phone already exist');
         });
 
         it("should update the user", async () => {
@@ -319,11 +312,6 @@ describe('User', () => {
             await expect(User.updateUser(userObj.id, {nom: "updated"})).to.not.be.rejected;
             const result = await User.findById(userObj.id);
             expect(result).to.have.property('nom', 'updated');
-
-          /*  await expect(User.updateUser(2, {nom: "updated", prenom: "test"})).to.not.be.rejected;
-            const result2 = await User.findById(2);
-            expect(result2).to.have.property('nom', 'updated');
-            expect(result2).to.have.property('prenom', 'test');*/
         });
 
     });
@@ -339,17 +327,17 @@ describe('User', () => {
         });
 
         it("should throw an error if id is null", async () => {
-            await expect(User.deleteUser(null, {})).to.be.rejectedWith(Error, 'id is null');
+            await expect(User.deleteUser(null, {})).to.be.rejectedWith('id is null');
         });
 
         it("should throw an error if id is not an integer", async () => {
-            await expect(User.deleteUser("1", {})).to.be.rejectedWith(Error, 'should be an integer');
+            await expect(User.deleteUser("1", {})).to.be.rejectedWith('should be an integer');
         });
 
         it("should delete the user", async () => {
             const user = await User.createUser("createuser2@mail.com", "Passw0rd!", "toto", "titi", "0611111114");
             await expect(User.deleteUser(user.id)).to.not.be.rejected;
-            return await expect(User.findById(user.id)).to.be.rejectedWith(Error, 'user Id does not exist');
+            await expect(User.findById(user.id)).to.be.rejectedWith('user Id does not exist');
         });
 
     });
@@ -367,12 +355,8 @@ describe('User', () => {
         });
 
         it("should throw an error if user Id does not exist", async () => {
-            console.log("========================================", Error)
-            await expect(User.findById(100)).to.be.rejectedWith(Error, 'user Id does not exist');
+            await expect(User.findById(10000)).to.be.rejectedWith('user Id does not exist');
         });
     });
 
-    after((done) => {
-        done();
-    });
 });

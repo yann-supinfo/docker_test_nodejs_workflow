@@ -5,7 +5,9 @@ const Hotel = sequelize.define('hotel', {
     address: Sequelize.STRING,
     description: Sequelize.STRING,
     phone: Sequelize.STRING,
+    description: Sequelize.STRING,
     email: Sequelize.STRING,
+    price: Sequelize.INTEGER,
   });
   
 
