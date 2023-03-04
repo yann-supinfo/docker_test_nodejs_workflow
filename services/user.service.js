@@ -52,11 +52,12 @@ const findById = async (id) => {
     try {
         isValidId(id);
         await isExistUserTable();
-        console.log("try to find id", id);
+
         if(!await isExistUserId(id)) throw new Error('user Id does not exist'.red);
-        console.log('passed');
 
         const userSelected = await db.user.findByPk(id);
+        console.log('debug : ', userSelected);
+        if(userSelected === null) throw new Error('user Id does not exist'.red);
 
         console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
