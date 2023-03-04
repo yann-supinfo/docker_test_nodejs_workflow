@@ -54,7 +54,11 @@ const findById = async (id) => {
         await isExistUserTable();
 
         if(!await isExistUserId(id)) throw new Error('user Id does not exist'.red);
+
         const userSelected = await db.user.findByPk(id);
+        console.log('debug : ', userSelected);
+        if(userSelected === null) throw new Error('user Id does not exist'.red);
+
         console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
@@ -245,6 +249,7 @@ const isExistUserTable = async () => {
 const isValidId = (id) => {
     if(id === null) throw new Error('id is null'.red);
     if(typeof id !== "number") throw new Error('should be an integer'.red);
+    return true;
 }
 
 const isObj = (obj) => {
