@@ -30,7 +30,7 @@ db.sequelize.sync({force:true})
   });
 // Test the connection
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to hotel application." });
 });
 
 require('./routes/auth.routes')(app);

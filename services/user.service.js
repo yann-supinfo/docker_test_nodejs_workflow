@@ -8,27 +8,26 @@ const colors = require('colors');
 const REGEXP_email = /^\S+@\S+\.\S+$/;
 const REGEXP_name = /^[a-zA-Z]+$/;
 const REGEXP_phone = /^(0|\+33)[-. ]?[1-9]{1}([-. ]?[0-9]{2}){4}$/;
-// const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
 
 /* C.R.U.D Function User */
 
     /* Create */
 const createUser = async (mail, pwd, lastname, firstname, phone) => {
 
-    isValidEmail(mail);
-    isValidLastname(lastname);
-    isValidFirstname(firstname);
-    isValidPhone(phone);
-    isValidPassword(pwd);
-
-    phone = formatPhoneNumber(phone);
-    let encryptedPassword = bcrypt.hashSync(pwd, 8);
-
-    await isExistUserTable();
-    if (await isExistUserEmail(mail)) throw new Error('email already exist'.red);
-    if (await isExistUserPhone(phone)) throw new Error('phone already exist'.red);
-
     try {
+
+        isValidEmail(mail);
+        isValidLastname(lastname);
+        isValidFirstname(firstname);
+        isValidPhone(phone);
+        isValidPassword(pwd);
+
+        phone = formatPhoneNumber(phone);
+        let encryptedPassword = bcrypt.hashSync(pwd, 8);
+
+        await isExistUserTable();
+        if (await isExistUserEmail(0, mail)) throw new Error('email already exist'.red);
+        if (await isExistUserPhone(0, phone)) throw new Error('phone already exist'.red);
 
         const User = await db.user.create({
             email: mail,
@@ -40,7 +39,7 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
         console.log(`User ${User.nom} ${User.prenom} has been successfully added`.green);
         return User
     } catch (err) {
-        console.log(err.message);
+        throw err.message;
     }
 
 }
@@ -48,33 +47,32 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
     /* Read */
         /* By Id */
 const findById = async (id) => {
-    console.log('findByIda1')
-    isValidId(id);
-    console.log('findByIda2')
-   // await isExistUserTable();
-   console.log('findByIdb1')
-    await isExistUserId(id);
-    console.log('findByIdb2')
+    
     try {
-        console.log('findById1')
+        isValidId(id);
+        await isExistUserTable();
+
+        if(!await isExistUserId(id)) throw new Error('user Id does not exist'.red);
+
         const userSelected = await db.user.findByPk(id);
-        console.log('findById2')
+        console.log('debug : ', userSelected);
+        if(userSelected === null) throw new Error('user Id does not exist'.red);
+
         console.log(`Utilisateur trouvé: ${userSelected.nom} ${userSelected.prenom}`.green);
         return userSelected;
                 
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 }
 
         /* By Email */
 const findByEmail = async (mail) => {
 
-    isValidEmail(mail);
-    await isExistUserTable();
-    if (!await isExistUserEmail(mail)) throw new Error('User email does not exist'.red);
-
     try {
+        isValidEmail(mail);
+        await isExistUserTable();
+        if (!await isExistUserEmail(0, mail)) throw new Error('User email does not exist'.red);
 
         const userSelected = await db.user.findOne({where: {email: mail} });
         
@@ -82,20 +80,19 @@ const findByEmail = async (mail) => {
         return userSelected;
                 
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 }
 
         /* By Phone number */
 const findByPhone = async (phone) => {
 
-    isValidPhone(phone);
-    await isExistUserTable();
-    if (!await isExistUserPhone(phone)) throw new Error('User phone does not exist'.red);
-
-    phone = formatPhoneNumber(phone);
-
     try {
+        isValidPhone(phone);
+        await isExistUserTable();
+        if (!await isExistUserPhone(0, phone)) throw new Error('User phone does not exist'.red);
+
+        phone = formatPhoneNumber(phone);
 
         const userSelected = await db.user.findOne({where: {telephone: phone} });
         
@@ -103,18 +100,18 @@ const findByPhone = async (phone) => {
         return userSelected;
                 
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 }
 
         /* By Lastname */
 const findByLastname = async (lastname) => {
 
-    isValidLastname(lastname);
-    await isExistUserTable();
-    if (!await isExistUserLastname(lastname)) throw new Error('User lastname does not exist'.red);
-
     try {
+
+        isValidLastname(lastname);
+        await isExistUserTable();
+        if (!await isExistUserLastname(lastname)) throw new Error('User lastname does not exist'.red);
 
         const userSelected = await db.user.findAll({where: {nom: lastname} });
         
@@ -122,18 +119,17 @@ const findByLastname = async (lastname) => {
         return userSelected;
                 
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 }
 
         /* By Firstname */
 const findByFirstname = async (firstname) => {
 
-    isValidFirstname(firstname);
-    await isExistUserTable();
-    if (!await isExistUserFirstname(firstname)) throw new Error('User firstname does not exist'.red);
-
     try {
+        isValidFirstname(firstname);
+        await isExistUserTable();
+        if (!await isExistUserFirstname(firstname)) throw new Error('User firstname does not exist'.red);
 
         const userSelected = await db.user.findAll({where: {prenom: firstname} });
         
@@ -141,31 +137,32 @@ const findByFirstname = async (firstname) => {
         return userSelected;
                 
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 }
 
     /* Update */
 const updateUser = async (id, userObj) => {
 
-    isValidId(id);
-    isObj(userObj);
-
-    await isExistUserTable();    
-    
-    if (userObj.hasOwnProperty('email')) {
-        isValidEmail(userObj.email);
-        if (await isExistUserEmail(userObj.email)) throw new Error('email already exist'.red);
-    }
-    if (userObj.hasOwnProperty('prenom')) isValidFirstname(userObj.prenom);
-    if (userObj.hasOwnProperty('nom')) isValidLastname(userObj.nom);
-    if (userObj.hasOwnProperty('telephone')) {
-        isValidPhone(userObj.telephone);
-        if (await isExistUserPhone(userObj.telephone)) throw new Error('phone already exist'.red);
-    }
-    if (userObj.hasOwnProperty('password')) isValidPassword(userObj.password);
-
     try {
+        isValidId(id);
+        isObj(userObj);
+
+        await isExistUserTable();    
+        
+        if (userObj.hasOwnProperty('email')) {
+            isValidEmail(userObj.email);
+            if (await isExistUserEmail(id, userObj.email)) throw new Error('email already exist'.red);
+        }
+        if (userObj.hasOwnProperty('prenom')) isValidFirstname(userObj.prenom);
+        if (userObj.hasOwnProperty('nom')) isValidLastname(userObj.nom);
+        if (userObj.hasOwnProperty('telephone')) {
+            isValidPhone(userObj.telephone);
+            if (await isExistUserPhone(id, userObj.telephone)) throw new Error('phone already exist'.red);
+        }
+        if (userObj.hasOwnProperty('password')) isValidPassword(userObj.password);
+
+        if(!await isExistUserId(id)) throw new Error('user Id does not exist');
         const user = await findById(id);
 
         if (userObj.hasOwnProperty('email')) user.email = userObj.email;
@@ -179,7 +176,7 @@ const updateUser = async (id, userObj) => {
         await user.save();
         console.log(`User with ID ${id} updated successfully`.green);
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 
 }
@@ -187,17 +184,19 @@ const updateUser = async (id, userObj) => {
     /* Delete */
 const deleteUser = async (id) => {
 
-    isValidId(id);
-    await isExistUserTable();
-    await isExistUserId(id);
+    
 
     try {
+        isValidId(id);
+        await isExistUserTable();
+        if(!await isExistUserId(id)) throw new Error('user Id does not exist'.red);
+
         db.user.destroy({
             where: { id: id }
-        })
+        });
         console.log(`User with ID ${id} removed successfully`.green);
     } catch(err) {
-        console.log(err.message);
+        throw err.message;
     }
 }
 
@@ -222,16 +221,17 @@ const isExistUserLastname = async (lastname) => {
 }
 
 const isExistUserId = async (id) => {
-    if (await db.user.count({ where: {id: id} }) === 0) throw new Error('user Id does not exist'.red);
-}
-
-const isExistUserPhone = async (phone) => {
-    if (await db.user.count({ where: {telephone: phone} }) > 0 ) return true;
+    if (await db.user.count({ where: {id: id} }) > 0) return true;
     return false;
 }
 
-const isExistUserEmail = async (email) => {
-    if (await db.user.count({ where: {email: email} }) > 0) return true;
+const isExistUserPhone = async (id, phone) => {
+    if (await db.user.count({ where: {telephone: phone, id: { [db.Sequelize.Op.ne]: id}} }) > 0 ) return true;
+    return false;
+}
+
+const isExistUserEmail = async (id, email) => {
+    if (await db.user.count({ where: {email: email, id: { [db.Sequelize.Op.ne]: id}} }) > 0) return true;
     return false;
 }
 
@@ -242,11 +242,13 @@ const isExistUserTable = async () => {
     if(!tables.includes('users')) {
         throw new Error('users table does not exist'.red);
     }
+    return true;
 }
 
 const isValidId = (id) => {
     if(id === null) throw new Error('id is null'.red);
     if(typeof id !== "number") throw new Error('should be an integer'.red);
+    return true;
 }
 
 const isObj = (obj) => {
