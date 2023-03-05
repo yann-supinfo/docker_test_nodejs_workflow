@@ -1,6 +1,7 @@
 const db = require('../models');
 const { Sequelize } = require('sequelize');
 const bcrypt = require("bcryptjs");
+const { Op } = require("sequelize");
 
 // for debugging only
 const colors = require('colors');
@@ -8,7 +9,6 @@ const colors = require('colors');
 const REGEXP_email = /^\S+@\S+\.\S+$/;
 const REGEXP_name = /^[a-zA-Z]+$/;
 const REGEXP_phone = /^(0|\+33)[-. ]?[1-9]{1}([-. ]?[0-9]{2}){4}$/;
-// const REGEXP_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
 
 /* C.R.U.D Function User */
 
@@ -27,8 +27,8 @@ const createUser = async (mail, pwd, lastname, firstname, phone) => {
         let encryptedPassword = bcrypt.hashSync(pwd, 8);
 
         await isExistUserTable();
-        if (await isExistUserEmail(mail)) throw new Error('email already exist'.red);
-        if (await isExistUserPhone(phone)) throw new Error('phone already exist'.red);
+        if (await isExistUserEmail(0, mail)) throw new Error('email already exist'.red);
+        if (await isExistUserPhone(0, phone)) throw new Error('phone already exist'.red);
 
         const User = await db.user.create({
             email: mail,
@@ -73,7 +73,7 @@ const findByEmail = async (mail) => {
     try {
         isValidEmail(mail);
         await isExistUserTable();
-        if (!await isExistUserEmail(mail)) throw new Error('User email does not exist'.red);
+        if (!await isExistUserEmail(0, mail)) throw new Error('User email does not exist'.red);
 
         const userSelected = await db.user.findOne({where: {email: mail} });
         
@@ -91,7 +91,7 @@ const findByPhone = async (phone) => {
     try {
         isValidPhone(phone);
         await isExistUserTable();
-        if (!await isExistUserPhone(phone)) throw new Error('User phone does not exist'.red);
+        if (!await isExistUserPhone(0, phone)) throw new Error('User phone does not exist'.red);
 
         phone = formatPhoneNumber(phone);
 
@@ -153,13 +153,13 @@ const updateUser = async (id, userObj) => {
         
         if (userObj.hasOwnProperty('email')) {
             isValidEmail(userObj.email);
-            if (await isExistUserEmail(userObj.email)) throw new Error('email already exist'.red);
+            if (await isExistUserEmail(id, userObj.email)) throw new Error('email already exist'.red);
         }
         if (userObj.hasOwnProperty('prenom')) isValidFirstname(userObj.prenom);
         if (userObj.hasOwnProperty('nom')) isValidLastname(userObj.nom);
         if (userObj.hasOwnProperty('telephone')) {
             isValidPhone(userObj.telephone);
-            if (await isExistUserPhone(userObj.telephone)) throw new Error('phone already exist'.red);
+            if (await isExistUserPhone(id, userObj.telephone)) throw new Error('phone already exist'.red);
         }
         if (userObj.hasOwnProperty('password')) isValidPassword(userObj.password);
 
@@ -226,13 +226,13 @@ const isExistUserId = async (id) => {
     return false;
 }
 
-const isExistUserPhone = async (phone) => {
-    if (await db.user.count({ where: {telephone: phone} }) > 0 ) return true;
+const isExistUserPhone = async (id, phone) => {
+    if (await db.user.count({ where: {telephone: phone, id:  { [db.Sequelize.Op.ne]: id} }}) > 0 ) return true;
     return false;
 }
 
-const isExistUserEmail = async (email) => {
-    if (await db.user.count({ where: {email: email} }) > 0) return true;
+const isExistUserEmail = async (id, email) => {
+    if (await db.user.count({ where: {email: email, id:  { [db.Sequelize.Op.ne]: id }} }) > 0) return true;
     return false;
 }
 
