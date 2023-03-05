@@ -23,9 +23,9 @@ const createHotel = async (name, address, phone, description, email, price) => {
         phone = formatPhoneNumber(phone);
 
         await isExistHotelTable();
-        if(await isExistHotelEmail(email)) throw new Error('Hotel email already exist'.red);
-        if(await isExistHotelPhone(phone)) throw new Error('Hotel phone already exist'.red);
-        if(await isExistHotelAddress(address)) throw new Error('Hotel address already exist'.red);
+        if(await isExistHotelEmail(0, email)) throw new Error('Hotel email already exist'.red);
+        if(await isExistHotelPhone(0, phone)) throw new Error('Hotel phone already exist'.red);
+        if(await isExistHotelAddress(0, address)) throw new Error('Hotel address already exist'.red);
 
         const Hotel = await db.hotel.create({
             name: name, 
@@ -97,7 +97,7 @@ const findByAddress = async (address) => {
 
         isValidAddress(address);
         await isExistHotelTable();
-        if (!await isExistHotelAddress(address)) throw new Error('Hotel address does not exist'.red);
+        if (!await isExistHotelAddress(0, address)) throw new Error('Hotel address does not exist'.red);
 
         const hotelSelected = await db.hotel.findOne({where: {address: address} });
         
@@ -129,12 +129,12 @@ const updateHotel = async (id, hotelObj) => {
         }
         if (hotelObj.hasOwnProperty('address')) {
             isValidAddress(hotelObj.address);
-            if (await isExistHotelAddress(hotelObj.address)) throw new Error('address already exist'.red);
+            if (await isExistHotelAddress(id, hotelObj.address)) throw new Error('address already exist'.red);
             hotel.address = hotelObj.address;
         }
         if (hotelObj.hasOwnProperty('phone')) {
             isValidPhone(hotelObj.phone);
-            if (await isExistHotelPhone(hotelObj.phone)) throw new Error('phone already exist'.red);
+            if (await isExistHotelPhone(id, hotelObj.phone)) throw new Error('phone already exist'.red);
             hotel.phone = hotelObj.phone;
         }
         if (hotelObj.hasOwnProperty('description')) {
@@ -143,7 +143,7 @@ const updateHotel = async (id, hotelObj) => {
         }
         if (hotelObj.hasOwnProperty('email')) {
             isValidEmail(hotelObj.email);
-            if (await isExistHotelEmail(hotelObj.email)) throw new Error('email already exist'.red);
+            if (await isExistHotelEmail(id, hotelObj.email)) throw new Error('email already exist'.red);
             hotel.email = hotelObj.email;
         }
         if (hotelObj.hasOwnProperty('price')) {
@@ -203,8 +203,8 @@ const isExistHotelName = async (name) => {
     return false;
 }
 
-const isExistHotelAddress = async (address) => {
-    if (await db.hotel.count({ where: {address: address} }) > 0 ) return true;
+const isExistHotelAddress = async (id, address) => {
+    if (await db.hotel.count({ where: {address: address, id: { [db.Sequelize.Op.ne]: id}} }) > 0 ) return true;
     return false;
 }
 
@@ -213,13 +213,13 @@ const isExistHotelId = async (id) => {
     return false;
 }
 
-const isExistHotelPhone = async (phone) => {
-    if (await db.hotel.count({ where: {phone: phone} }) > 0 ) return true;
+const isExistHotelPhone = async (id, phone) => {
+    if (await db.hotel.count({ where: {phone: phone, id: { [db.Sequelize.Op.ne]: id}} }) > 0 ) return true;
     return false;
 }
 
-const isExistHotelEmail = async (email) => {
-    if (await db.hotel.count({ where: {email: email} }) > 0) return true;
+const isExistHotelEmail = async (id, email) => {
+    if (await db.hotel.count({ where: {email: email, id: { [db.Sequelize.Op.ne]: id} }}) > 0) return true;
     return false;
 }
 
