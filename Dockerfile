@@ -9,6 +9,7 @@ RUN npm install dotenv --save
 RUN npm install -g mocha
 RUN npm install --save-dev chai
 RUN npm install --save-dev chai-as-promised
+RUN npm install colors #ONLY FOR DEBUGGING
 RUN npm install
 RUN npm ci
 RUN npm install colors #ONLY FOR DEBUGGING

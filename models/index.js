@@ -20,7 +20,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.hotel = require("./hotel.model.js")(sequelize, Sequelize);
-db.chambre = require("./chambre.model.js")(sequelize, Sequelize);
+
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.reservation = require("./reservation.model.js")(sequelize, Sequelize);
 db.role = require("./role.model.js")(sequelize, Sequelize);
@@ -31,8 +31,7 @@ db.reservation.belongsTo(db.hotel);
 db.user .hasMany(db.reservation);
 db.reservation.belongsTo(db.user);
 
-db.hotel.hasMany(db.chambre);
-db.chambre.belongsTo(db.hotel);
+
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

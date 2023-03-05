@@ -9,19 +9,9 @@ const Client = sequelize.define('user', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  nom: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  prenom: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  telephone: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    unique: true
-  }
+  nom: Sequelize.STRING,
+  prenom: Sequelize.STRING,
+  telephone: Sequelize.STRING
 });
 
 return Client;
