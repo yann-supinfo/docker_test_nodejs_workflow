@@ -21,11 +21,11 @@ const createReservation = async (checkin, checkout, numberPeople, hotelId, userI
         await isExistHotelTable();
         await isExistUserTable();
         await isExistReservationTable();
-        await isExistHotelId(hotelId);
-        await isExistUserId(userId);
+        if(!await isExistHotelId(hotelId)) throw new Error('hotelId does not exist'.red);
+        if(!await isExistUserId(userId)) throw new Error('userId does not exist'.red);
         isValidNumberPeople(numberPeople);
 
-        if(await hasReservation(userId, checkin, checkout)) throw new Error('User already has a reservation for this period'.red);
+        if(await hasReservation(0, userId, checkin, checkout)) throw new Error('User already has a reservation for this period'.red);
         const oneDayMs = 24 * 60 * 60 * 1000;
         const diffMs = checkout.getTime() - checkin.getTime();
         const numberNight = Math.ceil(diffMs / oneDayMs);
@@ -36,7 +36,7 @@ const createReservation = async (checkin, checkout, numberPeople, hotelId, userI
           checkin: checkin,
           checkout: checkout,
           numberPeople: numberPeople,
-          price : getPriceTrip(hotelId, numberNight) * numberPeople,
+          price : await getPriceTrip(hotelId, numberNight) * numberPeople,
         });
 
         console.log(`The reservation from ${checkin} to ${checkout} has been successfully added`.green);
@@ -75,7 +75,7 @@ const findByHotel = async (hotelId) => {
         isValidId(hotelId);
         await isExistReservationTable();
 
-        if(!await isExistHotelId(id)) throw new Error('hotel Id does not exist'.red);
+        if(!await isExistHotelId(hotelId)) throw new Error('hotel Id does not exist'.red);
 
         const reservationSelected = await db.reservation.findAll({where: {hotelId: hotelId} });
 
@@ -93,11 +93,11 @@ const findByUser = async (userId) => {
         isValidId(userId);
         await isExistReservationTable();
 
-        if(!await isExistUserId(id)) throw new Error('user Id does not exist'.red);
+        if(!await isExistUserId(userId)) throw new Error('user Id does not exist'.red);
 
         const reservationSelected = await db.reservation.findAll({where: {userId: userId} });
 
-        console.log(`Reservation trouvée pour l'utilisateur ${hotelId}`.green);
+        console.log(`Reservation trouvée pour l'utilisateur ${userId}`.green);
         return reservationSelected;
                 
     } catch(err) {
@@ -107,37 +107,40 @@ const findByUser = async (userId) => {
 
     /* Update */
 const updateReservation = async (id, reservationObj) => {
-    // at least hotelId is mandatory !
+    // at least hotelId & userId is mandatory !
     try {
+
         isValidId(id);
-        isValidId(reservation.hotelId);
+        isValidId(reservationObj.hotelId);
+        isValidId(reservationObj.userId);
         isObj(reservationObj);
 
         await isExistReservationTable();
         await isExistHotelTable();
         if(!await isExistReservationId(id)) throw new Error('reservation Id does not exist'.red);
-        if(!await isExistReservationId(id)) throw new Error('reservation Id does not exist'.red);
+        if(!await isExistHotelId(reservationObj.hotelId)) throw new Error('hotel Id does not exist'.red);
+        if(!await isExistUserId(reservationObj.userId)) throw new Error('user Id does not exist'.red);
         let updatePrice = false;
-        let checkinMs;
-        let checkoutMs;
+        let checkin;
+        let checkout;
         let nbPeople;
         const reservation = await findById(id);
-          
+
         if (reservationObj.hasOwnProperty('checkin')) {
             isValidDate(reservationObj.checkin);
             reservation.checkin = reservationObj.checkin;
             updatePrice = true;
-            checkinMs = reservationObj.checkin.getTime();
+            checkin = reservationObj.checkin;
         } else {
-            checkinMs = reservation.checkin;
+            checkin = reservation.checkin;
         }
         if (reservationObj.hasOwnProperty('checkout')) {
             isValidDate(reservationObj.checkout);
             reservation.checkout = reservationObj.checkout;
             updatePrice = true;
-            checkoutMs = reservationObj.checkout.getTime();
+            checkout = reservationObj.checkout;
         } else {
-            checkoutMs = reservation.checkout;
+            checkout = reservation.checkout;
         }
         if (reservationObj.hasOwnProperty('numberPeople')) {
             isValidNumberPeople(reservationObj.numberPeople);
@@ -148,11 +151,14 @@ const updateReservation = async (id, reservationObj) => {
             nbPeople = reservation.numberPeople;
         }
 
+        if(checkout < checkin) throw new Error('checkout must be after checkin'.red);
+        if(await hasReservation(id, reservationObj.userId, checkin, checkout)) throw new Error('User already has a reservation for this period'.red);
+
         if(updatePrice) {
             const oneDayMs = 24 * 60 * 60 * 1000;
-            const diffMs = checkoutMs - checkinMs;
+            const diffMs = checkout.getTime() - checkin.getTime();
             const numberNight = Math.ceil(diffMs / oneDayMs);
-            reservation.price = getPriceTrip(hotelId, numberNight) * nbPeople;
+            reservation.price = await getPriceTrip(reservationObj.hotelId, numberNight) * nbPeople;
         }
 
         await reservation.save();
@@ -185,21 +191,22 @@ const deleteReservation = async (id) => {
 }
 
 /* Additionnal Function */
-const hasReservation = async (userId, checkin, checkout) => {
+const hasReservation = async (id, userId, checkin, checkout) => {
     const reservation = await db.reservation.findAll({
         where: {
             userId: userId,
+            id: { [db.Sequelize.Op.ne]: id },
             [Op.or]: [
-                { startDate: { [Op.between]: [startDate, endDate] } },
-                { endDate: { [Op.between]: [startDate, endDate] } },
+                { checkin: { [Op.between]: [checkin, checkout] } },
+                { checkout: { [Op.between]: [checkin, checkout] } },
                 { [Op.and]: [ 
-                    { startDate: { [Op.lte]: startDate } },
-                    { endDate: { [Op.gte]: endDate } } ] 
+                    { checkin: { [Op.lte]: checkin } },
+                    { checkout: { [Op.gte]: checkout } } ] 
                 }
             ]
         }
     });
-    if(reservations.length > 0) return true;
+    if(reservation.length > 0) return true;
     return false;
 }
 
@@ -259,8 +266,7 @@ const isExistHotelTable = async () => {
 
 const isValidDate = (date) => {
     if(date === null) throw new Error('date is null'.red);
-    console.log(typeof date);
-    if(!date instanceof Date && isNaN(date.valueOf())) throw new Error('should be a date object'.red);
+    if(!(date instanceof Date) || isNaN(date.getTime())) throw new Error('should be a date object'.red);
     if(date < new Date()) throw new Error('can not be a past date'.red);
     return true;
 }
