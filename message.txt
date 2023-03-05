@@ -1,0 +1,371 @@
+swagger: '2.0'
+info:
+  title: Hotel API
+  description: Cette plateforme de réservation d'hôtel a été développée par Akkor Hotel Ltd dans le but de fournir aux utilisateurs un moyen facile et pratique de trouver, réserver et gérer des hébergements hôteliers dans le monde entier. La plateforme permettra aux utilisateurs d'accomplir des tâches telles que la recherche d'hôtels, la réservation, le paiement en ligne et la modification si nécessaire. La plateforme comportera également un système de gestion d'utilisateurs qui permettra aux utilisateurs de créer, lire, mettre à jour et supprimer leurs profils d'utilisateurs.
+  version: 1.0.9
+
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      email:
+        type: string
+        format: email
+      username:
+        type: string
+      nom:
+        type: string
+      prenom:
+        type: string        
+      telephone:
+        type: string  
+        format: phone
+      password:
+        type: string
+      role:
+        type: string
+        enum:
+          - user
+          - employee
+          - admin
+  Hotel:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      address:
+        type: string
+      description:
+        type: string
+      telephone:
+        type: string    
+        format: phone
+      email:
+        type: string
+        format: email
+      price:
+        type: integer
+      picture_list:
+        type: array
+        items:
+          type: string
+  Booking:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      user_id:
+        type: integer
+        format: int64
+      hotel_id:
+        type: integer
+        format: int64
+      price:
+        type: integer
+      nb_personnes:
+        type: integer  
+      start_date:
+        type: string
+        format: date
+      end_date:
+        type: string
+        format: date
+  AuthResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        description: "The authentication token."
+      user:
+        $ref: '#/definitions/User'        
+  LoginUser:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+    required:
+      - email
+      - password        
+parameters:
+  limit:
+    in: query
+    name: limit
+    type: integer
+    format: int32
+    description: Maximum number of items to return. Default is 10.
+  sort_by:
+    in: query
+    name: sort_by
+    type: string
+    enum:
+      - date
+      - name
+      - location
+    description: Property to sort by.
+  order:
+    in: query
+    name: order
+    type: string
+    enum:
+      - asc
+      - desc
+    description: Sort order.
+    
+  user_id:
+    in: path
+    name: id
+    type: integer
+    required: true
+    format: int64
+    description: ID of the user to retrieve.
+  hotel_id:
+    in: path
+    name: id
+    type: integer
+    required: true
+    format: int64
+    description: ID of the hotel to retrieve.
+    
+  booking_id:
+    in: path
+    name: id
+    type: integer
+    required: true
+    format: int64
+    description: ID of the booking to retrieve.
+    
+  Authorization:
+    type: string
+    name: Authorization
+    in: header
+
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Authentification
+      summary: Créer un nouvel utilisateur
+      description: Créer un nouvel utilisateur avec un nom d'utilisateur unique et un mot de passe
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: L'utilisateur à créer
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: Utilisateur créé avec succès
+          schema:
+            $ref: '#/definitions/AuthResponse'
+        '400':
+          description: Mauvaise requête - l'utilisateur existe déjà ou certains champs sont manquants
+        '500':
+          description: Erreur serveur - impossible de créer l'utilisateur
+      
+  /auth/signin:
+    post:
+      tags:
+        - Authentification
+      summary: Connecter un utilisateur existant
+      description: Connecter un utilisateur existant avec son nom d'utilisateur et son mot de passe
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Les informations de connexion de l'utilisateur
+          required: true
+          schema:
+            $ref: '#/definitions/LoginUser'
+      responses:
+        '200':
+          description: Utilisateur connecté avec succès
+          schema:
+            $ref: '#/definitions/AuthResponse'
+        '400':
+          description: Mauvaise requête - nom d'utilisateur ou mot de passe incorrect
+        '500':
+          description: Erreur serveur - impossible de se connecter
+      
+  
+  /api/test/all:
+    get:
+      tags:
+        - test
+      summary: Accès public
+      description: Retourne un message pour indiquer que l'accès est public
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Message de succès
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Accès public
+
+  /api/test/user:
+    get:
+      tags:
+        - test
+      summary: Accès utilisateur
+      description: Retourne un message pour indiquer que l'accès est réservé aux utilisateurs authentifiés
+      produces:
+        - application/json
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Message de succès
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Accès utilisateur
+
+  /api/test/user/{id}:
+    get:
+      tags:
+        - test
+      summary: Détails utilisateur
+      description: Retourne les détails d'un utilisateur spécifié par son ID
+      produces:
+        - application/json
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID de l'utilisateur
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Détails de l'utilisateur
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              email:
+                type: string
+                example: user@example.com
+              pseudo:
+                type: string
+                example: user123
+              role:
+                type: string
+                example: utilisateur
+
+  /api/test/mod:
+    get:
+      tags:
+        - test
+      summary: Accès modérateur
+      description: Retourne un message pour indiquer que l'accès est réservé aux utilisateurs ayant le rôle de modérateur ou d'administrateur
+      produces:
+        - application/json
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Message de succès
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Accès modérateur
+
+  /api/test/admin:
+    get:
+      tags:
+        - test
+      summary: Accès administrateur
+      description: Retourne un message pour indiquer que l'accès est réservé aux utilisateurs ayant le rôle d'administrateur
+      produces:
+        - application/json
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Message de succès
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Accès administrateur
+
+  /api/test/hotels:
+    get:
+      summary: Récupère la liste de tous les hôtels
+      responses:
+        200:
+          description: La liste des hôtels a été récupérée avec succès.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hotel'
+        500:
+          description: Une erreur est survenue lors de la récupération des hôtels.
+
+  /api/test/hotel/{id}:
+    get:
+      summary: Récupère un hôtel en fonction de son identifiant
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Identifiant de l'hôtel à récupérer.
+          schema:
+            type: integer
+      responses:
+        200:
+          description: L'hôtel a été récupéré avec succès.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+        404:
+          description: L'hôtel demandé n'a pas été trouvé.
+        500:
+          description: Une erreur est survenue lors de la récupération de l'hôtel.
+                
+
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
