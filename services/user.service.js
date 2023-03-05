@@ -193,7 +193,7 @@ const deleteUser = async (id) => {
 
         db.user.destroy({
             where: { id: id }
-        })
+        });
         console.log(`User with ID ${id} removed successfully`.green);
     } catch(err) {
         throw err.message;

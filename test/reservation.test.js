@@ -298,7 +298,7 @@ describe('Reservation', () => {
             const hotel = await expect(Hotel.createHotel("hotel du deleteReservation", "12 rue du deleteReservation, 14000 Caen", "0622211111", "description", "deleteReservation@hotel.com", 50)).to.not.be.rejected;
             const reservation = await expect(Reservation.createReservation(new Date("2023-09-01"), new Date("2023-10-01"), 2, user.id, hotel.id)).to.not.be.rejected;
             await expect(Reservation.deleteReservation(reservation.id)).to.not.be.rejected;
-            await expect(Reservation.findById(reservation.id)).to.be.rejectedWith('reservation Id does not exist');
+            return await expect(Reservation.findById(reservation.id)).to.be.rejectedWith('reservation Id does not exist');
         });
 
     });
